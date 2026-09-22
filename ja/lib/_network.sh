@@ -150,8 +150,6 @@ _phy_fw_killswitch() {
     sudo ip6tables -A INPUT -i lo -j ACCEPT
     sudo ip6tables -A OUTPUT -o lo -j ACCEPT
 
-    # ❌ [DNS漏洩防止] 旧版にあった Port 53 (DNS) の直通許可 4行はここから削除 ❌
-
     # 4. 指定された生IPのVPNサーバーとの通信（往復）のみを許可
     if [ -n "$r_ip" ] && [ -n "$r_port" ] && [ -n "$r_proto" ]; then
         sudo iptables -A OUTPUT -p "$r_proto" -d "$r_ip" --dport "$r_port" -j ACCEPT
@@ -199,13 +197,15 @@ _phy_openvpn_start() {
     sudo chmod 666 "$log_file" "$_PHY_PID_FILE" 2>/dev/null
 
     # IPとポートのみを --remote に渡し、プロトコル指定エラーを回避
-    # 全体をサブシェル () で括り 画面のWARNINGを100%透明化
+    # --verb 3 と --mute 10 を追加して、エラーループ時のログ肥大化を完全防護
     ( sudo openvpn \
         --config "$ovpn_file" \
         --remote "$r_ip" "$r_port" \
         --auth-user-pass "$auth_file" \
         --allow-compression asym \
         --connect-timeout 15 \
+        --verb 3 \
+        --mute 10 \
         --daemon \
         --writepid "$_PHY_PID_FILE" \
         --log "$log_file" ) >/dev/null 2>&1
@@ -226,6 +226,10 @@ phy_disconnect() {
     fi
 
     _phy_openvpn_kill
+    
+    # 【追加】暴走中の openvpn プロセスが残っていれば強制全消去
+    sudo killall -9 openvpn >/dev/null 2>&1
+
     _phy_tun_clear
 
     # fvpn のプロセスがまだ残っていないかチェック

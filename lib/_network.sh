@@ -4,7 +4,7 @@
 # ==============================================================================
 
 # ------------------------------------------------------------------------------
-# 0. Physical Layer Mode Getter & Internal Cleanup Routines
+# 0. Physical Mode Getter & Internal Cleanup Routines
 # ------------------------------------------------------------------------------
 get_phy_mode() {
     if [ -f "$_PHY_STATE_FILE" ]; then
@@ -14,13 +14,13 @@ get_phy_mode() {
     fi
 }
 
-# Internal use: Forcefully remove all 3 physical state files at once
+# Internal: Forcefully delete all 3 physical state files at once
 _phy_cleanup_temp_files() {
     sudo rm -f "$_PHY_STATE_FILE" "$_PHY_CONNECTED_SERVER_FILE" "$_PHY_PID_FILE"
     rm -f "$_PHY_STATE_FILE" "$_PHY_CONNECTED_SERVER_FILE" "$_PHY_PID_FILE"
 }
 
-# Intermediate/External use: Safely clean up files only when disconnected
+# For intermediate layers/external use: Safely clean up state files only if disconnected
 phy_cleanup_if_disconnected() {
     if [ "$(get_phy_mode)" = "DISCONNECTED" ]; then
         _phy_cleanup_temp_files
@@ -31,22 +31,22 @@ phy_cleanup_if_disconnected() {
 # 1. DNS Apply & Backup/Restore Routines (Fail-Safe DNS Protection)
 # ------------------------------------------------------------------------------
 
-# Apply DNS (When VPN connection is established)
+# Apply DNS (When connection is established)
 _phy_dns_apply() {
     local resolv_conf="$FILE_RESOLV_CONF"
     local resolv_bak="$FILE_RESOLV_BACKUP"
     local dns_server="$FVPN_DNS_SERVER"
 
-    # Save latest resolv.conf to backup only if it's currently using raw IP settings
+    # Save latest resolv.conf to backup only when in raw IP state
     if [ -f "$resolv_conf" ] && ! grep -q "$dns_server" "$resolv_conf"; then
         sudo cp -f "$resolv_conf" "$resolv_bak"
     fi
 
-    # Rewrite with VPN DNS
+    # Overwrite with VPN DNS
     echo "nameserver $dns_server" | sudo tee "$resolv_conf" >/dev/null
 }
 
-# Restore DNS (Upon disconnect & startup cleanup)
+# Restore DNS (Upon disconnection & boot-time cleanup)
 _phy_dns_restore() {
     local resolv_conf="$FILE_RESOLV_CONF"
     local resolv_bak="$FILE_RESOLV_BACKUP"
@@ -59,21 +59,21 @@ _phy_dns_restore() {
 }
 
 # ------------------------------------------------------------------------------
-# 2. Terminate OpenVPN process safely & remove PID file
+# 2. Safe OpenVPN Termination & PID File Removal
 # ------------------------------------------------------------------------------
 _phy_openvpn_kill() {
     if [ -f "$_PHY_PID_FILE" ]; then
         local pid
         pid=$(cat "$_PHY_PID_FILE" 2>/dev/null | tr -d '\r\n')
 
-        # Check if PID is a number and the process is currently running
+        # Check if PID is numeric and the process exists
         if [ -n "$pid" ] && kill -0 "$pid" 2>/dev/null; then
-            # Terminate only the specific OpenVPN process started by fvpn
+            # Terminate specific OpenVPN process started by fvpn
             sudo kill -9 "$pid" >/dev/null 2>&1
         fi
     fi
 
-    # Remove PID file
+    # Delete PID file
     sudo rm -f "$_PHY_PID_FILE"
     rm -f "$_PHY_PID_FILE"
     return 0
@@ -92,7 +92,7 @@ _phy_tun_clear() {
 }
 
 # ------------------------------------------------------------------------------
-# 4. tun Interface Connectivity & IP Existence Check
+# 4. Check Connectivity and IP Existence on tun Interfaces
 # ------------------------------------------------------------------------------
 _phy_tun_check() {
     if ip -4 addr show | grep -q 'inet .* tun[0-9]*'; then
@@ -102,7 +102,7 @@ _phy_tun_check() {
 }
 
 # ------------------------------------------------------------------------------
-# 5. Physical Layer Firewall Unrestricted Flush
+# 5. Physical Layer Firewall Flush (Flush All Rules)
 # ------------------------------------------------------------------------------
 _phy_fw_flush() {
     sudo iptables -P INPUT ACCEPT
@@ -123,7 +123,7 @@ _phy_fw_flush() {
 }
 
 # ------------------------------------------------------------------------------
-# 6. Kill-Switch (Block all traffic except to target VPN server)
+# 6. Kill Switch (Block all traffic except to the target VPN server)
 # Arguments: $1 = target_ip, $2 = target_port, $3 = target_proto
 # ------------------------------------------------------------------------------
 _phy_fw_killswitch() {
@@ -131,11 +131,11 @@ _phy_fw_killswitch() {
     local r_port="$2"
     local r_proto="$3"
 
-    # 1. Initialize IPv4 / IPv6 tables
+    # 1. Clear IPv4 / IPv6 tables
     sudo iptables -F
     sudo ip6tables -F
 
-    # 2. Set all IPv4 / IPv6 default policies to DROP (Complete Block)
+    # 2. Set default policy to DROP (Total Block)
     sudo iptables -P INPUT DROP
     sudo iptables -P FORWARD DROP
     sudo iptables -P OUTPUT DROP
@@ -150,13 +150,13 @@ _phy_fw_killswitch() {
     sudo ip6tables -A INPUT -i lo -j ACCEPT
     sudo ip6tables -A OUTPUT -o lo -j ACCEPT
 
-    # 4. Allow round-trip traffic ONLY with the designated VPN server raw IP
+    # 4. Allow round-trip traffic ONLY with the designated VPN server IP
     if [ -n "$r_ip" ] && [ -n "$r_port" ] && [ -n "$r_proto" ]; then
         sudo iptables -A OUTPUT -p "$r_proto" -d "$r_ip" --dport "$r_port" -j ACCEPT
         sudo iptables -A INPUT  -p "$r_proto" -s "$r_ip" --sport "$r_port" -j ACCEPT
     fi
 
-    # 5. Allow all encrypted traffic passing through VPN virtual interface (tun+)
+    # 5. Allow all encrypted traffic through the VPN virtual interface (tun+)
     sudo iptables -A INPUT  -i tun+ -j ACCEPT
     sudo iptables -A OUTPUT -o tun+ -j ACCEPT
 
@@ -164,7 +164,7 @@ _phy_fw_killswitch() {
 }
 
 # ------------------------------------------------------------------------------
-# 7. Launch OpenVPN Daemon
+# 7. Start OpenVPN Daemon (Pass numerical IP to --remote)
 # Arguments: $1 = ovpn_file, $2 = auth_file, $3 = ip, $4 = port, $5 = proto
 # ------------------------------------------------------------------------------
 _phy_openvpn_start() {
@@ -176,14 +176,14 @@ _phy_openvpn_start() {
     local log_dir="${FVPN_LOGDIR:-./logs}"
     local log_file="${log_dir}/openvpn.log"
     local log_old="${log_file}.old"
-    # Threshold: 8192 (8KB / 2 blocks) - 256 (max line length) = 7936 bytes (0x1F00)
+    # Max size threshold: 8192 (8KB / 2 blocks) - 256 (max expected line length) = 7936 bytes
     local max_size=7936
 
     if [ ! -f "$ovpn_file" ] || [ ! -f "$auth_file" ]; then
         return 1
     fi
 
-    # 2-Generation Log Rotation: Ensure file size stays strictly within 8KB (2 blocks)
+    # 2-Generation log rotation: Ensure disk usage stays within 8KB (2 blocks)
     if [ -f "$log_file" ]; then
         local current_size
         current_size=$(stat -c%s "$log_file" 2>/dev/null || echo 0)
@@ -196,13 +196,16 @@ _phy_openvpn_start() {
     sudo touch "$log_file" "$_PHY_PID_FILE" 2>/dev/null
     sudo chmod 666 "$log_file" "$_PHY_PID_FILE" 2>/dev/null
 
-    # Launch OpenVPN daemon with direct IP/Port parameters inside a subshell
+    # Pass IP and Port to --remote to avoid protocol specification errors
+    # Added --verb 3 and --mute 10 to completely protect against log growth during error loops
     ( sudo openvpn \
         --config "$ovpn_file" \
         --remote "$r_ip" "$r_port" \
         --auth-user-pass "$auth_file" \
         --allow-compression asym \
         --connect-timeout 15 \
+        --verb 3 \
+        --mute 10 \
         --daemon \
         --writepid "$_PHY_PID_FILE" \
         --log "$log_file" ) >/dev/null 2>&1
@@ -211,21 +214,25 @@ _phy_openvpn_start() {
 }
 
 # ------------------------------------------------------------------------------
-# 8. Physical layer VPN disconnection process
+# 8. Physical Layer Disconnect Routine
 # ------------------------------------------------------------------------------
 phy_disconnect() {
     killall vpn_monitor.sh >/dev/null 2>&1
     
-    # Retrieve PID before disconnection
+    # Store PID before killing
     local pid=""
     if [ -f "$_PHY_PID_FILE" ]; then
         pid=$(cat "$_PHY_PID_FILE" 2>/dev/null | tr -d '\r\n')
     fi
 
     _phy_openvpn_kill
+    
+    # [Safety Net] Forcefully kill any lingering/runaway OpenVPN processes
+    sudo killall -9 openvpn >/dev/null 2>&1
+
     _phy_tun_clear
 
-    # Check if fvpn's process still exists
+    # Check if fvpn process is still remaining
     if [ -n "$pid" ] && kill -0 "$pid" 2>/dev/null; then
         return 1
     fi
@@ -238,7 +245,7 @@ phy_disconnect() {
 }
 
 # ------------------------------------------------------------------------------
-# 9. App Boot-time Dedicated Physical Initialization
+# 9. App Boot-Time Physical Initialization
 # ------------------------------------------------------------------------------
 _phy_boot() {
     local resolv_conf="$FILE_RESOLV_CONF"
