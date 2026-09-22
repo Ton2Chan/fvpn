@@ -59,10 +59,21 @@ _phy_dns_restore() {
 }
 
 # ------------------------------------------------------------------------------
-# 2. Immediate Termination of OpenVPN Process & PID File Removal
+# 2. Terminate OpenVPN process safely & remove PID file
 # ------------------------------------------------------------------------------
 _phy_openvpn_kill() {
-    sudo killall -9 openvpn >/dev/null 2>&1
+    if [ -f "$_PHY_PID_FILE" ]; then
+        local pid
+        pid=$(cat "$_PHY_PID_FILE" 2>/dev/null | tr -d '\r\n')
+
+        # Check if PID is a number and the process is currently running
+        if [ -n "$pid" ] && kill -0 "$pid" 2>/dev/null; then
+            # Terminate only the specific OpenVPN process started by fvpn
+            sudo kill -9 "$pid" >/dev/null 2>&1
+        fi
+    fi
+
+    # Remove PID file
     sudo rm -f "$_PHY_PID_FILE"
     rm -f "$_PHY_PID_FILE"
     return 0
@@ -153,7 +164,7 @@ _phy_fw_killswitch() {
 }
 
 # ------------------------------------------------------------------------------
-# 7. Start OpenVPN Daemon (Pass numerical IP directly via --remote)
+# 7. Launch OpenVPN Daemon
 # Arguments: $1 = ovpn_file, $2 = auth_file, $3 = ip, $4 = port, $5 = proto
 # ------------------------------------------------------------------------------
 _phy_openvpn_start() {
@@ -162,17 +173,30 @@ _phy_openvpn_start() {
     local r_ip="$3"
     local r_port="$4"
     local r_proto="$5"
-    local log_file="${FVPN_LOGDIR:-./logs}/openvpn.log"
+    local log_dir="${FVPN_LOGDIR:-./logs}"
+    local log_file="${log_dir}/openvpn.log"
+    local log_old="${log_file}.old"
+    # Threshold: 8192 (8KB / 2 blocks) - 256 (max line length) = 7936 bytes (0x1F00)
+    local max_size=7936
 
     if [ ! -f "$ovpn_file" ] || [ ! -f "$auth_file" ]; then
         return 1
     fi
 
+    # 2-Generation Log Rotation: Ensure file size stays strictly within 8KB (2 blocks)
+    if [ -f "$log_file" ]; then
+        local current_size
+        current_size=$(stat -c%s "$log_file" 2>/dev/null || echo 0)
+        if [ "$current_size" -gt "$max_size" ]; then
+            rm -f "$log_old"
+            mv "$log_file" "$log_old"
+        fi
+    fi
+
     sudo touch "$log_file" "$_PHY_PID_FILE" 2>/dev/null
     sudo chmod 666 "$log_file" "$_PHY_PID_FILE" 2>/dev/null
 
-    # Pass only IP and Port to --remote to prevent protocol specification errors.
-    # Wrap in subshell () to ensure 100% suppression of terminal warnings.
+    # Launch OpenVPN daemon with direct IP/Port parameters inside a subshell
     ( sudo openvpn \
         --config "$ovpn_file" \
         --remote "$r_ip" "$r_port" \
@@ -187,14 +211,22 @@ _phy_openvpn_start() {
 }
 
 # ------------------------------------------------------------------------------
-# 8. Physical Layer VPN Disconnection Processing
+# 8. Physical layer VPN disconnection process
 # ------------------------------------------------------------------------------
 phy_disconnect() {
     killall vpn_monitor.sh >/dev/null 2>&1
+    
+    # Retrieve PID before disconnection
+    local pid=""
+    if [ -f "$_PHY_PID_FILE" ]; then
+        pid=$(cat "$_PHY_PID_FILE" 2>/dev/null | tr -d '\r\n')
+    fi
+
     _phy_openvpn_kill
     _phy_tun_clear
 
-    if pgrep -x openvpn >/dev/null; then
+    # Check if fvpn's process still exists
+    if [ -n "$pid" ] && kill -0 "$pid" 2>/dev/null; then
         return 1
     fi
 
