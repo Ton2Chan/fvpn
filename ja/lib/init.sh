@@ -109,17 +109,64 @@ apply_work_zip_package() {
     rm -rf "$stage_dir"
     mkdir -p "$stage_dir" "$udp_dir" "$tcp_dir"
 
+    # 1. ZIP解凍チェック
     if ! unzip -q -o "$work_zip" -d "$stage_dir"; then
         rm -rf "$stage_dir" "$work_zip"
         return 1
     fi
 
-    rm -f "${udp_dir}"/*.ovpn "${tcp_dir}"/*.ovpn
+    # 2. 期待される .ovpn ファイル総数を取得
+    local expected_cnt
+    expected_cnt=$(find "$stage_dir" -type f -iname "*.ovpn" 2>/dev/null | wc -l)
 
+    # 3. 超高速ガード: .ovpn ファイルが存在しない場合は失敗終了
+    [ "$expected_cnt" -eq 0 ] && { rm -rf "$stage_dir" "$work_zip"; return 1; }
+
+    # 4. 超高速ガード: 有効な OpenVPN 設定 (remote 記述) が1つも含まれない場合は失敗終了 (1つ見つかり次第即抜け)
+    grep -q -i -E '^[[:space:]]*remote[[:space:]]+' "$stage_dir"/*.ovpn "$stage_dir"/*/*.ovpn 2>/dev/null || { rm -rf "$stage_dir" "$work_zip"; return 1; }
+
+    # 5. 一時バックアップディレクトリの作成
+    local bak_dir="${data_dir}/_ovpn_backup"
+    rm -rf "$bak_dir"
+    mkdir -p "${bak_dir}/udp" "${bak_dir}/tcp"
+
+    # 6. 既存ファイルの総数を記録し、バックアップ領域へ退避 (フェイルセーフ)
+    local old_cnt
+    old_cnt=$(find "${udp_dir}" "${tcp_dir}" -type f -iname "*.ovpn" 2>/dev/null | wc -l)
+
+    mv "${udp_dir}"/*.ovpn "${bak_dir}/udp/" 2>/dev/null
+    mv "${tcp_dir}"/*.ovpn "${bak_dir}/tcp/" 2>/dev/null
+
+    local bak_cnt
+    bak_cnt=$(find "$bak_dir" -type f -iname "*.ovpn" 2>/dev/null | wc -l)
+
+    # 退避件数が不一致（退避失敗）の場合は旧配置を復元して失敗終了
+    if [ "$bak_cnt" -ne "$old_cnt" ]; then
+        mv "${bak_dir}/udp"/*.ovpn "${udp_dir}/" 2>/dev/null
+        mv "${bak_dir}/tcp"/*.ovpn "${tcp_dir}/" 2>/dev/null
+        rm -rf "$stage_dir" "$work_zip" "$bak_dir"
+        return 1
+    fi
+
+    # 7. 新しい .ovpn ファイルを移動
     find "$stage_dir" -type f -iname "*udp*.ovpn" -exec mv {} "${udp_dir}/" \; 2>/dev/null
     find "$stage_dir" -type f -iname "*tcp*.ovpn" -exec mv {} "${tcp_dir}/" \; 2>/dev/null
 
-    rm -rf "$stage_dir" "$work_zip"
+    # 8. 配置完了チェック (実際に分類・移動されたファイル数のカウント)
+    local new_cnt
+    new_cnt=$(find "${udp_dir}" "${tcp_dir}" -type f -iname "*.ovpn" 2>/dev/null | wc -l)
+
+    # 9. 期待件数と不一致（移動失敗または一部失敗）の場合は新ファイルを撤去しバックアップから完全復元
+    if [ "$new_cnt" -ne "$expected_cnt" ]; then
+        rm -f "${udp_dir}"/*.ovpn "${tcp_dir}"/*.ovpn
+        mv "${bak_dir}/udp"/*.ovpn "${udp_dir}/" 2>/dev/null
+        mv "${bak_dir}/tcp"/*.ovpn "${tcp_dir}/" 2>/dev/null
+        rm -rf "$stage_dir" "$work_zip" "$bak_dir"
+        return 1
+    fi
+
+    # 10. 100%成功時のみ作業領域とバックアップを削除してタイムスタンプ更新
+    rm -rf "$stage_dir" "$work_zip" "$bak_dir"
 
     LAST_CHECK_TS=$(date +%s)
     LAST_CHECK_DATE=$(date +'%Y-%m-%d %H:%M:%S')

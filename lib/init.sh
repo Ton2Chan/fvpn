@@ -109,17 +109,64 @@ apply_work_zip_package() {
     rm -rf "$stage_dir"
     mkdir -p "$stage_dir" "$udp_dir" "$tcp_dir"
 
+    # 1. Unzip validation
     if ! unzip -q -o "$work_zip" -d "$stage_dir"; then
         rm -rf "$stage_dir" "$work_zip"
         return 1
     fi
 
-    rm -f "${udp_dir}"/*.ovpn "${tcp_dir}"/*.ovpn
+    # 2. Get expected count of .ovpn files
+    local expected_cnt
+    expected_cnt=$(find "$stage_dir" -type f -iname "*.ovpn" 2>/dev/null | wc -l)
 
+    # 3. Fast-guard: Abort if no .ovpn files are extracted
+    [ "$expected_cnt" -eq 0 ] && { rm -rf "$stage_dir" "$work_zip"; return 1; }
+
+    # 4. Fast-guard: Abort if no valid OpenVPN configuration ('remote' directive) is found (exits on first match)
+    grep -q -i -E '^[[:space:]]*remote[[:space:]]+' "$stage_dir"/*.ovpn "$stage_dir"/*/*.ovpn 2>/dev/null || { rm -rf "$stage_dir" "$work_zip"; return 1; }
+
+    # 5. Create temporary backup directory
+    local bak_dir="${data_dir}/_ovpn_backup"
+    rm -rf "$bak_dir"
+    mkdir -p "${bak_dir}/udp" "${bak_dir}/tcp"
+
+    # 6. Record existing file count and move to backup (Fail-safe)
+    local old_cnt
+    old_cnt=$(find "${udp_dir}" "${tcp_dir}" -type f -iname "*.ovpn" 2>/dev/null | wc -l)
+
+    mv "${udp_dir}"/*.ovpn "${bak_dir}/udp/" 2>/dev/null
+    mv "${tcp_dir}"/*.ovpn "${bak_dir}/tcp/" 2>/dev/null
+
+    local bak_cnt
+    bak_cnt=$(find "$bak_dir" -type f -iname "*.ovpn" 2>/dev/null | wc -l)
+
+    # Abort if backup file count does not strictly match original count
+    if [ "$bak_cnt" -ne "$old_cnt" ]; then
+        mv "${bak_dir}/udp"/*.ovpn "${udp_dir}/" 2>/dev/null
+        mv "${bak_dir}/tcp"/*.ovpn "${tcp_dir}/" 2>/dev/null
+        rm -rf "$stage_dir" "$work_zip" "$bak_dir"
+        return 1
+    fi
+
+    # 7. Move newly extracted .ovpn files
     find "$stage_dir" -type f -iname "*udp*.ovpn" -exec mv {} "${udp_dir}/" \; 2>/dev/null
     find "$stage_dir" -type f -iname "*tcp*.ovpn" -exec mv {} "${tcp_dir}/" \; 2>/dev/null
 
-    rm -rf "$stage_dir" "$work_zip"
+    # 8. Verify post-relocation file count
+    local new_cnt
+    new_cnt=$(find "${udp_dir}" "${tcp_dir}" -type f -iname "*.ovpn" 2>/dev/null | wc -l)
+
+    # 9. Rollback if file count does not strictly match expected count
+    if [ "$new_cnt" -ne "$expected_cnt" ]; then
+        rm -f "${udp_dir}"/*.ovpn "${tcp_dir}"/*.ovpn
+        mv "${bak_dir}/udp"/*.ovpn "${udp_dir}/" 2>/dev/null
+        mv "${bak_dir}/tcp"/*.ovpn "${tcp_dir}/" 2>/dev/null
+        rm -rf "$stage_dir" "$work_zip" "$bak_dir"
+        return 1
+    fi
+
+    # 10. Clean up staging/backup on success and update timestamps
+    rm -rf "$stage_dir" "$work_zip" "$bak_dir"
 
     LAST_CHECK_TS=$(date +%s)
     LAST_CHECK_DATE=$(date +'%Y-%m-%d %H:%M:%S')
