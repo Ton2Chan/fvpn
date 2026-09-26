@@ -875,7 +875,7 @@ show_main_menu() {
     while true; do
         show_debug_registers
 
-        echo "========== FVPN v1.0.5 by Ton2Chan =========="
+        echo "========== FVPN v1.0.6 by Ton2Chan =========="
         echo " 1) Quick VPN Connect (Connect to target server)"
         echo " 2) Disconnect VPN"
         echo " 3) Select Server & Connect"

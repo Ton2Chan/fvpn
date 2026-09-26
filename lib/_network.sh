@@ -61,22 +61,61 @@ _phy_dns_restore() {
 # ------------------------------------------------------------------------------
 # 2. Safe OpenVPN Termination & PID File Removal
 # ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+# 2. Safely terminate OpenVPN process & remove PID file
+# ------------------------------------------------------------------------------
 _phy_openvpn_kill() {
+    local ret=0
+
     if [ -f "$_PHY_PID_FILE" ]; then
         local pid
         pid=$(cat "$_PHY_PID_FILE" 2>/dev/null | tr -d '\r\n')
 
-        # Check if PID is numeric and the process exists
-        if [ -n "$pid" ] && kill -0 "$pid" 2>/dev/null; then
-            # Terminate specific OpenVPN process started by fvpn
-            sudo kill -9 "$pid" >/dev/null 2>&1
+        # Process only if PID is numeric
+        if [ -n "$pid" ] && [[ "$pid" =~ ^[0-9]+$ ]]; then
+
+            # Prevent accidental kill due to PID reuse (check /proc/PID/cmdline)
+            local proc_cmdline=""
+            if [ -r "/proc/$pid/cmdline" ]; then
+                proc_cmdline=$(tr '\0' ' ' < "/proc/$pid/cmdline" 2>/dev/null)
+            fi
+
+            if [[ "$proc_cmdline" == *openvpn* ]]; then
+
+                # Force terminate OpenVPN
+                if kill -0 "$pid" 2>/dev/null; then
+                    if ! sudo kill -9 "$pid" >/dev/null 2>&1; then
+                        ret=1
+                    fi
+
+                    # Wait up to 2 seconds for OpenVPN to fully terminate and close files
+                    local j
+                    for (( j=1; j<=20; j++ )); do
+                        if ! kill -0 "$pid" 2>/dev/null; then
+                            break
+                        fi
+                        sleep 0.1
+                    done
+
+                    # If process still exists after 2 seconds
+                    if kill -0 "$pid" 2>/dev/null; then
+                        ret=1
+                    fi
+                fi
+
+            elif [ -n "$proc_cmdline" ]; then
+                # PID exists but is not OpenVPN (PID reused)
+                # OpenVPN no longer exists, so treat this as normal exit
+                :
+            fi
         fi
     fi
 
-    # Delete PID file
-    sudo rm -f "$_PHY_PID_FILE"
-    rm -f "$_PHY_PID_FILE"
-    return 0
+    # Remove PID file
+    sudo rm -f "$_PHY_PID_FILE" 2>/dev/null
+    rm -f "$_PHY_PID_FILE" 2>/dev/null
+
+    return "$ret"
 }
 
 # ------------------------------------------------------------------------------

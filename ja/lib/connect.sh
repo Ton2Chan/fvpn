@@ -89,7 +89,6 @@ phy_connect() {
                 if [ -z "$proc_cmdline" ] ||
                    [[ "$proc_cmdline" != *openvpn* ]]; then
 
-                    echo -e "\n[Warning] OpenVPNプロセスの消失または異常終了を検知しました。"
                     ret_code=1
                     break
                 fi

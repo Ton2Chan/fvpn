@@ -116,7 +116,6 @@ phy_connect() {
            grep -a -E \
            'Operation not permitted|File descriptor in bad state' >/dev/null 2>&1; then
 
-            echo -e "\n[Warning] OpenVPN communication error (rapid loop indicator) detected. Terminating process."
             ret_code=1
             break
         fi
