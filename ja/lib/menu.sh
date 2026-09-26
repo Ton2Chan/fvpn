@@ -875,7 +875,7 @@ show_main_menu() {
     while true; do
         show_debug_registers
 
-        echo "========== FVPN v1.0.4 by Ton2Chan =========="
+        echo "========== FVPN v1.0.5 by Ton2Chan =========="
         echo " 1) 簡易VPN接続 (注目サーバーへ接続)"
         echo " 2) VPN切断"
         echo " 3) サーバー個別指定接続"

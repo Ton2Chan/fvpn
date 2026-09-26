@@ -18,7 +18,6 @@ is_network_online() {
 
 phy_connect() {
     local target_path="$1"
-    # 追加: 2〜4番目の引数（IP, Port, Proto）を受け取る
     local s_ip="$2"
     local s_port="$3"
     local s_proto="$4"
@@ -26,23 +25,29 @@ phy_connect() {
     local auth_file="${FVPN_DATA:-./data}/auth.conf"
     local state_file="${FVPN_DATA:-./data}/_phy_mode"
     local conn_file="${FVPN_DATA:-./data}/_phy_connected_server"
-    local pid_file="${FVPN_DATA:-./data}/_fvpn.pid"
+    local pid_file="${FVPN_DATA:-./data}/fvpn.pid"
     local log_file="${FVPN_LOGDIR:-./logs}/openvpn.log"
     local timeout="${TIMEOUT_VPN_CONNECT:-30}"
 
     [ ! -f "$auth_file" ] && auth_file="./data/auth.conf"
 
+    # 既存のOpenVPNとTUNを確実に整理
     _phy_openvpn_kill
     _phy_tun_clear
 
-    # 修正: 引数（$s_ip $s_port $s_proto）を正しく伝達
+    # 起動前のキルスイッチ適用
     _phy_fw_killswitch "$s_ip" "$s_port" "$s_proto"
 
-    # 起動前に過去のログをクリア（誤検知防止）
     > "$log_file" 2>/dev/null
 
-    # 修正: 引数（$s_ip $s_port $s_proto）を正しく伝達
-    _phy_openvpn_start "$target_path" "$auth_file" "$s_ip" "$s_port" "$s_proto"
+    # OpenVPN起動
+    _phy_openvpn_start \
+        "$target_path" \
+        "$auth_file" \
+        "$s_ip" \
+        "$s_port" \
+        "$s_proto"
+
     if [ $? -ne 0 ]; then
         echo "LOCKDOWN" > "$state_file" 2>/dev/null
         rm -f "$conn_file" "$pid_file" 2>/dev/null
@@ -50,25 +55,70 @@ phy_connect() {
     fi
 
     local i
-    local ret_code=1  # デフォルトはタイムアウト/一般接続失敗(1)
+    local ret_code=1
 
     for (( i=1; i<=timeout; i++ )); do
-        # 1. 接続成功のチェック
+
+        # 1. VPN接続成功
         if _phy_tun_check; then
             echo "CONNECTED" > "$state_file" 2>/dev/null
             echo "$target_path" > "$conn_file" 2>/dev/null
-            
-            # ★ 接続成功：VPN用DNS(10.8.8.8)の適用 & 生IP用DNSのバックアップ保存
+
             _phy_dns_apply
 
             export AUTH_STATE=1
             return 0
         fi
 
-        # 2. ログから認証失敗 (AUTH_FAILED) をリアルタイム検知
-        if [ -f "$log_file" ] && grep -q "AUTH_FAILED" "$log_file"; then
+        # 2. OpenVPNプロセスの死活監視
+        #
+        # _phy_openvpn_start() はPIDファイルを先に作成するため、
+        # 起動直後などPIDの中身がまだ空の場合は監視をスキップする。
+        if [ -s "$pid_file" ]; then
+            local openvpn_pid
+            openvpn_pid=$(cat "$pid_file" 2>/dev/null)
+
+            if [[ "$openvpn_pid" =~ ^[0-9]+$ ]] &&
+               [ "$openvpn_pid" -gt 0 ]; then
+
+                local proc_cmdline
+                proc_cmdline=$(tr '\0' ' ' < "/proc/$openvpn_pid/cmdline" 2>/dev/null)
+
+                # PIDに対応するプロセスが存在しない、
+                # または別プロセスにPIDが再利用されている場合
+                if [ -z "$proc_cmdline" ] ||
+                   [[ "$proc_cmdline" != *openvpn* ]]; then
+
+                    echo -e "\n[Warning] OpenVPNプロセスの消失または異常終了を検知しました。"
+                    ret_code=1
+                    break
+                fi
+            fi
+        fi
+
+        # 3. 認証失敗の検知
+        #
+        # grep -q は pipefail 有効時に tail のSIGPIPEを誘発する可能性があるため、
+        # -qを使用せず /dev/null に捨てる。
+        if [ -s "$log_file" ] &&
+           tail -c 8192 "$log_file" 2>/dev/null |
+           grep -a "AUTH_FAILED" >/dev/null 2>&1; then
+
             export AUTH_STATE=-1
-            ret_code=2  # 拡張エラーコード：認証失敗(2)
+            ret_code=2
+            break
+        fi
+
+        # 4. OpenVPNの通信エラー（高速ループの兆候）を検知
+        #
+        # ここも grep -q を使用しない。
+        if [ -s "$log_file" ] &&
+           tail -c 8192 "$log_file" 2>/dev/null |
+           grep -a -E \
+           'Operation not permitted|File descriptor in bad state' >/dev/null 2>&1; then
+
+            echo -e "\n[Warning] OpenVPNの通信エラー（高速ループの兆候）を検知しました。プロセスを停止します。"
+            ret_code=1
             break
         fi
 
@@ -77,13 +127,18 @@ phy_connect() {
     done
 
     echo ""
+
+    # 接続失敗・異常終了時の共通後始末
     _phy_openvpn_kill
     _phy_tun_clear
-    _phy_fw_killswitch
+
+    # キルスイッチ状態を安全側へ戻す
+    _phy_fw_killswitch "$s_ip" "$s_port" "$s_proto"
+
     echo "LOCKDOWN" > "$state_file" 2>/dev/null
     rm -f "$conn_file" "$pid_file" 2>/dev/null
 
-    return $ret_code
+    return "$ret_code"
 }
 
 # ==============================================================================

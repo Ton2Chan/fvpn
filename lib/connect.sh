@@ -18,7 +18,6 @@ is_network_online() {
 
 phy_connect() {
     local target_path="$1"
-    # Receive 2nd to 4th arguments (IP, Port, Proto)
     local s_ip="$2"
     local s_port="$3"
     local s_proto="$4"
@@ -26,23 +25,29 @@ phy_connect() {
     local auth_file="${FVPN_DATA:-./data}/auth.conf"
     local state_file="${FVPN_DATA:-./data}/_phy_mode"
     local conn_file="${FVPN_DATA:-./data}/_phy_connected_server"
-    local pid_file="${FVPN_DATA:-./data}/_fvpn.pid"
+    local pid_file="${FVPN_DATA:-./data}/fvpn.pid"
     local log_file="${FVPN_LOGDIR:-./logs}/openvpn.log"
     local timeout="${TIMEOUT_VPN_CONNECT:-30}"
 
     [ ! -f "$auth_file" ] && auth_file="./data/auth.conf"
 
+    # Clean up existing OpenVPN process and TUN interface safely
     _phy_openvpn_kill
     _phy_tun_clear
 
-    # Pass arguments ($s_ip $s_port $s_proto) correctly
+    # Apply kill-switch rules prior to launching OpenVPN
     _phy_fw_killswitch "$s_ip" "$s_port" "$s_proto"
 
-    # Clear previous logs before startup to prevent false positives
     > "$log_file" 2>/dev/null
 
-    # Pass arguments ($s_ip $s_port $s_proto) correctly
-    _phy_openvpn_start "$target_path" "$auth_file" "$s_ip" "$s_port" "$s_proto"
+    # Launch OpenVPN
+    _phy_openvpn_start \
+        "$target_path" \
+        "$auth_file" \
+        "$s_ip" \
+        "$s_port" \
+        "$s_proto"
+
     if [ $? -ne 0 ]; then
         echo "LOCKDOWN" > "$state_file" 2>/dev/null
         rm -f "$conn_file" "$pid_file" 2>/dev/null
@@ -50,25 +55,69 @@ phy_connect() {
     fi
 
     local i
-    local ret_code=1  # Default: Timeout / General Connection Failure (1)
+    local ret_code=1
 
     for (( i=1; i<=timeout; i++ )); do
-        # 1. Check for successful connection
+
+        # 1. Successful VPN connection
         if _phy_tun_check; then
             echo "CONNECTED" > "$state_file" 2>/dev/null
             echo "$target_path" > "$conn_file" 2>/dev/null
-            
-            # Connection successful: Apply VPN DNS (10.8.8.8) & Backup Raw IP DNS
+
             _phy_dns_apply
 
             export AUTH_STATE=1
             return 0
         fi
 
-        # 2. Real-time detection of authentication failure (AUTH_FAILED) from logs
-        if [ -f "$log_file" ] && grep -q "AUTH_FAILED" "$log_file"; then
+        # 2. OpenVPN Process Liveness Check
+        #
+        # _phy_openvpn_start() creates the PID file first,
+        # so skip checking if the file is empty right after startup.
+        if [ -s "$pid_file" ]; then
+            local openvpn_pid
+            openvpn_pid=$(cat "$pid_file" 2>/dev/null)
+
+            if [[ "$openvpn_pid" =~ ^[0-9]+$ ]] &&
+               [ "$openvpn_pid" -gt 0 ]; then
+
+                local proc_cmdline
+                proc_cmdline=$(tr '\0' ' ' < "/proc/$openvpn_pid/cmdline" 2>/dev/null)
+
+                # Process missing or PID recycled by another application
+                if [ -z "$proc_cmdline" ] ||
+                   [[ "$proc_cmdline" != *openvpn* ]]; then
+
+                    echo -e "\n[Warning] Detected OpenVPN process disappearance or unexpected termination."
+                    ret_code=1
+                    break
+                fi
+            fi
+        fi
+
+        # 3. Authentication failure detection
+        #
+        # Avoid 'grep -q' as it may trigger SIGPIPE on 'tail' when pipefail is enabled.
+        # Redirect output to /dev/null instead.
+        if [ -s "$log_file" ] &&
+           tail -c 8192 "$log_file" 2>/dev/null |
+           grep -a "AUTH_FAILED" >/dev/null 2>&1; then
+
             export AUTH_STATE=-1
-            ret_code=2  # Extended error code: Authentication Failed (2)
+            ret_code=2
+            break
+        fi
+
+        # 4. Communication error (rapid loop indicator) watchdog
+        #
+        # 'grep -q' is omitted here as well for safety.
+        if [ -s "$log_file" ] &&
+           tail -c 8192 "$log_file" 2>/dev/null |
+           grep -a -E \
+           'Operation not permitted|File descriptor in bad state' >/dev/null 2>&1; then
+
+            echo -e "\n[Warning] OpenVPN communication error (rapid loop indicator) detected. Terminating process."
+            ret_code=1
             break
         fi
 
@@ -77,13 +126,18 @@ phy_connect() {
     done
 
     echo ""
+
+    # Common cleanup sequence upon connection failure or unexpected termination
     _phy_openvpn_kill
     _phy_tun_clear
-    _phy_fw_killswitch
+
+    # Safely restore kill-switch state
+    _phy_fw_killswitch "$s_ip" "$s_port" "$s_proto"
+
     echo "LOCKDOWN" > "$state_file" 2>/dev/null
     rm -f "$conn_file" "$pid_file" 2>/dev/null
 
-    return $ret_code
+    return "$ret_code"
 }
 
 # ==============================================================================
