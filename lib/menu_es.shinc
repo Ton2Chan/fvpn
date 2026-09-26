@@ -1,0 +1,855 @@
+
+#!/bin/bash
+# ==============================================================================
+# FVPN - Menu & User Interaction Module (Spanish / Español)
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# Display Menu Footer / Status Header
+# ------------------------------------------------------------------------------
+show_status_header() {
+    local phy_mode
+    phy_mode=$(get_phy_mode)
+
+    local m_tag="fix"
+    case "${CONNECT_MODE}" in
+        2|"2"|"SEQ")    m_tag="seq" ;;
+        3|"3"|"RANDOM") m_tag="rnd" ;;
+        1|"1"|"FIXED"|*) m_tag="fix" ;;
+    esac
+
+    # Formato de columna fijo
+    local fix_str=" $m_tag "
+    local lock_str=" lock "
+    local state_str=" off "
+
+    case "$phy_mode" in
+        "CONNECTED")
+            fix_str="[$m_tag]"
+            ;;
+        "LOCKDOWN")
+            lock_str="[lock]"
+            ;;
+        "DISCONNECTED"|*)
+            state_str="[off]"
+            ;;
+    esac
+
+    # Estado de Autenticación
+    local auth_status="Autenticación:[--]"
+    local state="${AUTH_STATE:-0}"
+
+    if [ "$state" -gt 0 ]; then
+        auth_status="Autenticación:[OK]"
+    elif [ "$state" -lt 0 ]; then
+        auth_status="Autenticación:[NG]"
+    else
+        auth_status="Autenticación:[--]"
+    fi
+
+    # Output del Encabezado
+    printf "VPN %s%s%s %s" "$fix_str" "$lock_str" "$state_str" "$auth_status"
+    echo ""
+
+    get_server_info_line
+
+    echo ""
+    echo "-------------------------------------------"
+}
+
+# ==============================================================================
+# Connection Processing with UI Messages
+# ==============================================================================
+
+connect_by_master_index_wm() {
+    local m_idx="$1"
+
+    connect_by_master_index "$m_idx"
+    local res=$?
+
+    # --- Mensajes de Resultado de Conexión ---
+    echo ""
+    if [ "$res" -eq 0 ]; then
+        echo " ✓ Conexión VPN establecida con éxito."
+    else
+        echo " ❌ Fallo en la conexión VPN."
+        echo " 🔒 Tráfico protegido por el Kill Switch (LOCKDOWN)"
+    fi
+
+    return $res
+}
+
+disconnect_vpn() {
+    echo "Ejecutando desconexión de la VPN..."
+
+    if phy_disconnect; then
+        phy_cleanup_if_disconnected
+        echo "✓ Conexión directa IP restaurada."
+        return 0
+    else
+        echo "❌ Fallo al detener el proceso físico."
+        return 1
+    fi
+}
+
+exit_fvpn() {
+    local current_mode
+    current_mode=$(get_phy_mode)
+
+    if [ "$current_mode" != "DISCONNECTED" ]; then
+        echo ""
+        echo "⚠️  La VPN está conectada actualmente (o el tráfico está bloqueado)."
+        read -rp "¿Desconectar VPN y salir? [y/N]: " ans
+
+        case "$ans" in
+            [yY]|[yY][eE][sS]|[sS]|[sS][iI])
+                disconnect_vpn
+                ;;
+            *)
+                echo "Manteniendo estado de protección VPN (Kill Switch)."
+                ;;
+        esac
+    else
+        phy_cleanup_if_disconnected
+    fi
+}
+
+# ==============================================================================
+# Quick Connection Settings UI & Submenu Functions
+# ==============================================================================
+
+configure_connect_mode() {
+    local m_opt
+    echo
+    echo "1: Acceso Fijo (Conectar siempre al servidor objetivo seleccionado)"
+    echo "2: Acceso Secuencial (Cambiar al siguiente servidor en cada conexión)"
+    echo "3: Acceso Aleatorio (Selección automática entre candidatos filtrados)"
+    read -rp "Seleccione el modo [1-3]: " m_opt
+    case "$m_opt" in
+        1|2|3)
+            CONNECT_MODE="$m_opt"
+            ;;
+    esac
+}
+
+configure_protocol_mode() {
+    local p_opt
+    echo
+    echo "1: Solo UDP (Rápido / Recomendado)"
+    echo "2: Solo TCP (Enfoque en estabilidad)"
+    echo "3: Mixto (Seleccionar tanto UDP como TCP)"
+    read -rp "Seleccione el protocolo [1-3]: " p_opt
+    case "$p_opt" in
+        1) set_protocol_mode 1 ;;
+        2) set_protocol_mode -1 ;;
+        3) set_protocol_mode 0 ;;
+        *) return ;;
+    esac
+
+    build_active_servers
+    sync_target_index_by_server
+}
+
+configure_filter_level() {
+    local f_val
+    echo
+    echo "--- Seleccionar Nivel de Filtro de Conexión ---"
+    echo " 4)  [4] 3  2  1  0  : Solo Clasificación 4 (Favoritos)"
+    echo " 3)  [4  3] 2  1  0  : Clasificación 3 (Bueno) o superior"
+    echo " 2)  [4  3  2] 1  0  : Clasificación 2 (Estándar) o superior"
+    echo " 1)  [4  3  2  1] 0  : Clasificación 1 (Aceptable) o superior"
+    echo " 0)  [4  3  2  1  0] : Seleccionar todos los servidores"
+    echo "---------------------------------------------------"
+    read -rp "Seleccione el nivel [0-4 / Presione Enter para volver]: " f_val
+    if [ -n "$f_val" ] && [[ "$f_val" =~ ^[0-4]$ ]]; then
+        FILTER_LEVEL="$f_val"
+        build_active_servers
+        sync_target_index_by_server
+    fi
+}
+
+update_servers() {
+    local mode="${1:-force}"
+    local base_dir="${FVPN_HOME:-.}"
+    local data_dir="${FVPN_DATA:-${base_dir}/data}"
+    local work_zip="${data_dir}/fastestvpn_ovpn.zip"
+
+    local dl_dir
+    dl_dir=$(get_download_dir)
+    local local_zip="${dl_dir}/fastestvpn_ovpn.zip"
+    local local_bak="${dl_dir}/fastestvpn_ovpn.zip.bak"
+
+    if [ "$HAS_UPDATE_ZIP" -eq 1 ]; then
+        mkdir -p "$data_dir"
+        cp -f "$local_zip" "$work_zip"
+        mv -f "$local_zip" "$local_bak"
+        HAS_UPDATE_ZIP=0
+    else
+        if ! is_network_online || [ "$(get_phy_mode)" = "LOCKDOWN" ]; then
+            echo "No se pudo conectar a la red."
+            return 1
+        fi
+
+        if [ "$mode" = "skip" ]; then
+            CURRENT_TIMEOUT="${TIMEOUT_AUTO_UPDATE}"
+            if ! should_check_update; then
+                return 0
+            fi
+        else
+            CURRENT_TIMEOUT="${TIMEOUT_MANUAL_UPDATE}"
+        fi
+
+        local target_url="${CUSTOM_UPDATE_URL:-$OFFICIAL_UPDATE_URL}"
+
+        if ! download_url_to_work_zip "$target_url" "$work_zip"; then
+            echo "⚠️ Error al descargar el archivo de actualización."
+            return 1
+        fi
+    fi
+
+    if ! apply_work_zip_package; then
+        echo "⚠️ Error al aplicar el paquete de actualización."
+        return 1
+    fi
+
+    local default_mark="${MARK_ADDED:-+}"
+    if [ "${FVPN_TOTAL_COUNT}" -eq 0 ]; then
+        default_mark="${MARK_NORMAL:-_}"
+    fi
+
+    build_master_servers "$default_mark"
+
+    echo "✓ Lista de servidores actualizada con éxito."
+    return 0
+}
+
+# ==============================================================================
+# Export Rating Data
+# ==============================================================================
+export_server_ratings() {
+    local target_dir
+    target_dir=$(get_download_dir)
+
+    if [ ! -d "$target_dir" ]; then
+        mkdir -p "$target_dir" 2>/dev/null || {
+            echo "Error: Fallo al crear el directorio de destino ($target_dir)."
+            return 1
+        }
+    fi
+
+    if [ -z "$MASTER_SERVERS_BUFFER" ]; then
+        echo "Error: No hay datos de servidores disponibles para exportar."
+        return 1
+    fi
+
+    local export_file="${target_dir}/${FILE_RATINGS_EXPORT_NAME:-fvpn_ratings.txt}"
+    local tmp_file
+    tmp_file=$(mktemp)
+
+    local buf_len=${#MASTER_SERVERS_BUFFER}
+    local offset=0
+    local exported_count=0
+
+    while [ "$offset" -lt "$buf_len" ]; do
+        local rec="${MASTER_SERVERS_BUFFER:$offset:RECORD_BYTE_SIZE}"
+        [ ${#rec} -lt 120 ] && break
+
+        local line="${rec%$'\n'}"
+        line="${line%"${line##*[![:space:]]}"}"
+
+        if [ -n "$line" ]; then
+            printf "%s\n" "$line" >> "$tmp_file"
+            ((exported_count++))
+        fi
+
+        offset=$((offset + RECORD_BYTE_SIZE))
+    done
+
+    if [ "$exported_count" -gt 0 ]; then
+        mv "$tmp_file" "$export_file"
+        echo "✓ Exportados ${exported_count} registros de clasificación de servidores."
+        echo "  Ubicación de salida: ${export_file}"
+    else
+        rm -f "$tmp_file"
+        echo "Error: No hay datos disponibles para exportar."
+    fi
+
+    return 0
+}
+
+# ==============================================================================
+# Import Rating Data
+# ==============================================================================
+import_server_ratings() {
+    local target_dir
+    target_dir=$(get_download_dir)
+
+    local import_file="${target_dir}/${FILE_RATINGS_EXPORT_NAME:-fvpn_ratings.txt}"
+
+    if [ ! -f "$import_file" ]; then
+        echo "Error: Archivo de importación no encontrado."
+        echo "  Ruta verificada: ${import_file}"
+        return 1
+    fi
+
+    if [ -z "$MASTER_SERVERS_BUFFER" ]; then
+        build_master_servers
+    fi
+
+    echo "Importando datos de clasificación de servidores..."
+
+    declare -A import_map
+    local loaded_count=0
+    local line
+
+    while IFS= read -r line || [ -n "$line" ]; do
+        [ ${#line} -lt 14 ] && continue
+
+        local p_type="${line:${OFFSET_PROTO}:${LENGTH_PROTO}}"
+        local r_val="${line:${OFFSET_RATING}:${LENGTH_RATING}}"
+        local fn="${line:${OFFSET_FNAME}}"
+        fn=$(echo "$fn" | xargs)
+
+        if [[ "$p_type" =~ ^[ut]$ ]] && [[ "$r_val" =~ ^[0-4]$ ]] && [ -n "$fn" ]; then
+            import_map["${p_type}_${fn}"]="$r_val"
+            ((loaded_count++))
+        fi
+    done < "$import_file"
+
+    if [ "$loaded_count" -eq 0 ]; then
+        echo "Advertencia: No se encontraron datos válidos en el archivo de importación."
+        return 1
+    fi
+
+    local rec_size=${RECORD_BYTE_SIZE}
+    local buf_len=${#MASTER_SERVERS_BUFFER}
+    local offset=0
+    local updated_count=0
+
+    while [ "$offset" -lt "$buf_len" ]; do
+        local rec="${MASTER_SERVERS_BUFFER:$offset:$rec_size}"
+        [ ${#rec} -lt 120 ] && break
+
+        local p_type="${rec:${OFFSET_PROTO}:${LENGTH_PROTO}}"
+        local fn="${rec:${OFFSET_FNAME}}"
+        fn=$(echo "$fn" | xargs)
+
+        local key="${p_type}_${fn}"
+
+        if [ -n "${import_map[$key]+exists}" ]; then
+            local new_r="${import_map[$key]}"
+            local current_r="${rec:${OFFSET_RATING}:${LENGTH_RATING}}"
+
+            if [ "$current_r" != "$new_r" ]; then
+                local target_idx=$((offset + ${OFFSET_RATING}))
+                MASTER_SERVERS_BUFFER="${MASTER_SERVERS_BUFFER:0:$target_idx}${new_r}${MASTER_SERVERS_BUFFER:$((target_idx + 1))}"
+                ((updated_count++))
+            fi
+        fi
+
+        offset=$((offset + rec_size))
+    done
+
+    if [ "$updated_count" -gt 0 ]; then
+        build_active_servers
+        sync_target_index_by_server
+        echo "✓ Importados ${updated_count} registros de clasificación."
+    else
+        echo "Info: No se encontraron cambios en los datos."
+    fi
+
+    return 0
+}
+
+# ==============================================================================
+# Quick Connection Logic
+# ==============================================================================
+
+quick_connect() {
+    local N="${ACTIVE_TOTAL_COUNT}"
+
+    if [ "$N" -le 0 ]; then
+        echo "❌ Ningún servidor disponible superó el filtro de conexión."
+        return 1
+    fi
+
+    case "${CONNECT_MODE}" in
+        2)
+            TARGET_INDEX=$(( (TARGET_INDEX + 1) % N ))
+            ;;
+        3)
+            local r=$(( RANDOM % N ))
+            [ "$r" -eq "$TARGET_INDEX" ] && r=$(( (r + 1) % N ))
+            TARGET_INDEX="$r"
+            ;;
+        1|*)
+            (( TARGET_INDEX < 0 )) && TARGET_INDEX=0
+            ;;
+    esac
+    update_target_server_by_index
+
+    local m_idx
+    m_idx=$(get_target_master_index)
+
+    local display_info
+    display_info=$(get_server_info_line "$TARGET_INDEX")
+    echo "${display_info}"
+
+    connect_by_master_index_wm "$m_idx"
+    return $?
+}
+
+show_quick_connect_settings() {
+    while true; do
+        local mode_disp proto_disp filter_disp
+
+        case "${CONNECT_MODE}" in
+            1) mode_disp="[1:FIJO] 2:SEC  3:ALEATORIO" ;;
+            2) mode_disp=" 1:FIJO [2:SEC] 3:ALEATORIO" ;;
+            3) mode_disp=" 1:FIJO  2:SEC [3:ALEATORIO]" ;;
+            *) mode_disp="[1:FIJO] 2:SEC  3:ALEATORIO" ;;
+        esac
+
+        local p="${PROTOCOL_MODE}"
+        if (( p > 0 )); then
+            proto_disp="[1:UDP]  2:TCP  3:MIXTO"
+        elif (( p < 0 )); then
+            proto_disp="1:UDP  [2:TCP]  3:MIXTO"
+        else
+            proto_disp="1:UDP  2:TCP  [3:MIXTO]"
+        fi
+
+        case "${FILTER_LEVEL}" in
+            4) filter_disp="[4] 3  2  1  0" ;;
+            3) filter_disp="[4  3] 2  1  0" ;;
+            2) filter_disp="[4  3  2] 1  0" ;;
+            1) filter_disp="[4  3  2  1] 0" ;;
+            0) filter_disp="[4  3  2  1  0]" ;;
+            *) filter_disp="[4  3  2] 1  0" ;;
+        esac
+
+        echo
+        echo "========== Configuración de Conexión Rápida =========="
+        echo " 1) Cambiar Modo de Conexión  : ${mode_disp}"
+        echo " 2) Cambiar Modo de Protocolo : ${proto_disp}"
+        echo " 3) Nivel de Filtro           : ${filter_disp}"
+        echo " 0) Volver (Presione Enter para regresar)"
+        echo "----------------------------------------------------"
+        read -p "Seleccione la opción [0]: " q_choice
+        q_choice="${q_choice:-0}"
+
+        case "$q_choice" in
+            1) configure_connect_mode ;;
+            2) configure_protocol_mode ;;
+            3) configure_filter_level ;;
+            0) break ;;
+            *) echo "Opción no válida." ;;
+        esac
+    done
+}
+
+# ==============================================================================
+# Server Management & Rating UI
+# ==============================================================================
+
+reset_ratings_menu() {
+    echo ""
+    read -p "¿Restablecer todas las clasificaciones al valor predeterminado (2)? (y/N): " confirm
+    case "$confirm" in
+        [yY]|[yY][eE][sS]|[sS]|[sS][iI])
+            if reset_server_ratings; then
+                echo "✓ Proceso completado. (Nivel de filtro restablecido a 0)"
+            fi
+            ;;
+        *)
+            echo "Operación cancelada."
+            ;;
+    esac
+}
+
+manage_protocol_servers() {
+    local target_proto="$1"
+    local proto_label="UDP"
+    [ "$target_proto" = "t" ] && proto_label="TCP"
+
+    local record_size=${RECORD_BYTE_SIZE}
+    local udp_cnt="${FVPN_UDP_COUNT}"
+    local tcp_cnt="${FVPN_TCP_COUNT}"
+
+    local max_num=$udp_cnt
+    if [ "$target_proto" = "t" ]; then
+        max_num=$tcp_cnt
+    fi
+
+    [ "$max_num" -le 0 ] && { echo "(No se encontraron servidores ${proto_label} correspondientes)"; return 0; }
+
+    echo ""
+    echo "========== Lista de Servidores ${proto_label} y Configuración =========="
+    
+    local base_index
+    base_index=$(get_master_index "$target_proto" 1)
+    local start_byte=$(( base_index * record_size ))
+    local total_bytes=$(( max_num * record_size ))
+    local sub_buf="${MASTER_SERVERS_BUFFER:$start_byte:$total_bytes}"
+
+    printf '%s' "$sub_buf" | sed 's/[[:space:]]*$//'
+
+    echo "=================================================="
+    echo " Leyenda: 4:Favorito, 2:Sin clasificar, 1:Aceptable, 3:Bueno, 0:Excluido"
+    echo "--------------------------------------------------"
+
+    while true; do
+        read -rp "Seleccione el número de servidor a cambiar [Enter o 0 para volver]: " num_input
+
+        [ -z "$num_input" ] || [ "$num_input" = "0" ] && break
+
+        if [[ ! "$num_input" =~ ^[1-9][0-9]*$ ]] || [ "$num_input" -gt "$max_num" ]; then
+            echo "⚠️ Ingrese un número entre 1 y ${max_num}."
+            continue
+        fi
+
+        local target_master_idx
+        target_master_idx=$(get_master_index "$target_proto" "$num_input")
+
+        echo "$(get_master_server_info_line "$target_master_idx")"
+        read -rp "Ingrese la nueva clasificación [0-4]: " new_rate
+        if [[ ! "$new_rate" =~ ^[0-4]$ ]]; then
+            echo "⚠️ Ingrese un valor entre 0 y 4."
+            continue
+        fi
+
+        update_server_rating_by_master_index "$target_master_idx" "$new_rate"
+        echo "$(get_master_server_info_line "$target_master_idx")"
+        echo ""
+    done
+}
+
+select_vpn_server() {
+    local target_proto=""
+
+    while true; do
+        echo -e "\n========== Selección Directa de Servidor y Conexión =========="
+        echo " 1) UDP"
+        echo " 2) TCP"
+        echo " 0) Volver (Presione Enter para regresar)"
+        read -rp "Seleccione [0-2]: " p_choice
+
+        case "$p_choice" in
+            1) target_proto="u"; break ;;
+            2) target_proto="t"; break ;;
+            0|"") echo "Operación cancelada."; return 0 ;;
+            *) echo "⚠️ Opción no válida. Ingrese un valor entre 0 y 2." ;;
+        esac
+    done
+
+    local target_count=0
+    if [ "$target_proto" = "u" ]; then
+        target_count="${ACTIVE_UDP_COUNT}"
+    else
+        target_count="${ACTIVE_TCP_COUNT}"
+    fi
+
+    if [ "$target_count" -le 0 ]; then
+        echo "⚠️ Ningún servidor superó el filtro para el protocolo seleccionado (${target_proto^^})."
+        return 0
+    fi
+
+    echo ""
+    echo "--- Lista de Servidores Disponibles (${target_proto^^} : ${target_count} elementos) ---"
+
+    local start_offset=0
+    [ "$target_proto" = "t" ] && start_offset=$(( ${ACTIVE_UDP_COUNT} * RECORD_BYTE_SIZE ))
+    local total_bytes=$(( target_count * RECORD_BYTE_SIZE ))
+
+    local sub_buf="${ACTIVE_SERVERS_BUFFER:$start_offset:$total_bytes}"
+    printf '%s\n' "$sub_buf" | sed 's/[[:space:]]*$//'
+
+    local match_target_index=-1
+    local target_master_idx=-1
+    local s_num=""
+
+    while true; do
+        read -rp "Ingrese el número de servidor para conectar (0 para volver): " s_num
+
+        if [ -z "$s_num" ] || [ "$s_num" -eq 0 ] 2>/dev/null; then
+            echo "Operación cancelada."
+            return 0
+        fi
+
+        if ! [[ "$s_num" =~ ^[1-9][0-9]*$ ]]; then
+            echo "⚠️ Entrada no válida. Ingrese un número válido."
+            continue
+        fi
+
+        match_target_index=-1
+        target_master_idx=-1
+        local i=0
+
+        while [ "$i" -lt "$target_count" ]; do
+            local current_offset=$(( start_offset + (i * RECORD_BYTE_SIZE) ))
+            local rec="${ACTIVE_SERVERS_BUFFER:$current_offset:RECORD_BYTE_SIZE}"
+
+            local num_str="${rec:$OFFSET_INDEX:$LENGTH_INDEX}"
+            num_str=$(echo "$num_str" | xargs)
+
+            if [ "$num_str" -eq "$s_num" ] 2>/dev/null; then
+                if [ "$target_proto" = "u" ]; then
+                    match_target_index="$i"
+                else
+                    match_target_index=$(( ${ACTIVE_UDP_COUNT} + i ))
+                fi
+
+                local p_type="${rec:$OFFSET_PROTO:$LENGTH_PROTO}"
+                target_master_idx=$(get_master_index "$p_type" "$num_str")
+                break
+            fi
+            ((i++))
+        done
+
+        if [ "$target_master_idx" -ge 0 ]; then
+            break
+        fi
+
+        echo "⚠️ El servidor número [ ${s_num} ] no está disponible en la lista filtrada de ${target_proto^^}."
+    done
+
+    TARGET_INDEX="$match_target_index"
+    update_target_server_by_index
+
+    get_server_info_line
+    echo ""
+    connect_by_master_index_wm "$target_master_idx"
+    return $?
+}
+
+show_rating_menu() {
+    while true; do
+        echo ""
+        echo "========== Menú de Gestión de Servidores =========="
+        echo " 1) Lista de Servidores UDP y Clasificación"
+        echo " 2) Lista de Servidores TCP y Clasificación"
+        echo " 3) Exportar Clasificaciones de Servidores"
+        echo " 4) Importar Clasificaciones de Servidores"
+        echo " 5) Restablecer Todas las Clasificaciones"
+        echo " 6) Actualizar Lista de Servidores"
+        echo " 7) Configurar Tiempo de Espera (Timeout) de Conexión VPN"
+        echo " 0) Volver (Presione Enter para regresar)"
+        echo "--------------------------------------------------------"
+        read -rp "Seleccione [0]: " rm_choice
+        rm_choice="${rm_choice:-0}"
+
+        case "$rm_choice" in
+            1) manage_protocol_servers "u" ;;
+            2) manage_protocol_servers "t" ;;
+            3) export_server_ratings ;;
+            4) import_server_ratings ;;
+            5) reset_ratings_menu ;;
+            6) update_servers ;;
+            7) configure_vpn_timeout ;;
+            0) break ;;
+            *) echo "Opción no válida." ;;
+        esac
+    done
+}
+
+configure_vpn_timeout() {
+    local t_val
+    echo
+    echo "--- Configurar Tiempo de Espera (Timeout) de Conexión VPN ---"
+    echo " Valor actual: ${TIMEOUT_VPN_CONNECT} segundos"
+    read -rp "Ingrese el nuevo tiempo límite en segundos [1-120 / Enter para volver]: " t_val
+    if [[ "$t_val" =~ ^[0-9]+$ ]] && [ "$t_val" -ge 1 ] && [ "$t_val" -le 120 ]; then
+        TIMEOUT_VPN_CONNECT="$t_val"
+        save_all_settings
+        echo "✓ Tiempo de espera configurado a ${TIMEOUT_VPN_CONNECT} segundos."
+    fi
+}
+
+permission_setup() {
+    local data_dir="${FVPN_DATA:-$HOME/VPN/FastestVPN/data}"
+    local log_dir="${FVPN_LOGDIR:-$HOME/VPN/FastestVPN/logs}"
+    local auth_file="$data_dir/auth.conf"
+    local logrotate_conf="/etc/logrotate.d/fvpn"
+
+    echo
+    echo "=== Configuración Inicial (Permisos y Autenticación) ==="
+
+    if [ "$DEBUG" = "1" ]; then
+        echo "[DEBUG] FVPN_DATA = $data_dir"
+        echo "[DEBUG] FVPN_LOGDIR = $log_dir"
+        echo "[DEBUG] AUTH_FILE = $auth_file"
+    fi
+
+    echo "1. Configurando directorios y permisos..."
+    if [ ! -d "$data_dir" ]; then
+        mkdir -p "$data_dir"
+        echo "   ✓ Directorio de datos creado: $data_dir"
+    fi
+    chmod 700 "$data_dir" 2>/dev/null
+
+    if [ ! -d "$log_dir" ]; then
+        mkdir -p "$log_dir"
+        echo "   ✓ Directorio de registros (logs) creado: $log_dir"
+    fi
+    chmod 755 "$log_dir" 2>/dev/null
+
+    echo
+    echo "1.5. Configurando logrotate del sistema..."
+    
+    local abs_log_path
+    abs_log_path=$(readlink -f "${log_dir}/openvpn.log")
+
+    cat << EOF | sudo tee "$logrotate_conf" >/dev/null
+$abs_log_path {
+    size 2M
+    rotate 1
+    copytruncate
+    missingok
+    notifempty
+    su root root
+}
+EOF
+
+    if [ $? -eq 0 ]; then
+        sudo chmod 644 "$logrotate_conf" 2>/dev/null
+        echo "   ✓ Configuración de logrotate aplicada: $logrotate_conf"
+    else
+        echo "   ⚠️ Error al aplicar logrotate (verifique los permisos de sudo)"
+    fi
+
+    echo
+    echo "2. Configurar Credenciales de Autenticación (Usuario/Contraseña)"
+
+    local current_user=""
+    local current_pass=""
+
+    if [ -f "$auth_file" ]; then
+        current_user=$(sed -n '1p' "$auth_file")
+        current_pass=$(sed -n '2p' "$auth_file")
+        echo "   (Usuario actual: ${current_user:-No definido})"
+        echo "   * Presione Enter para mantener los valores existentes."
+    fi
+
+    echo
+    read -rp "Nombre de usuario [${current_user:-No definido}]: " input_user
+    read -s -rp "Contraseña: " input_pass
+    echo
+
+    local final_user="${input_user:-$current_user}"
+    local final_pass="${input_pass:-$current_pass}"
+
+    if [ -z "$final_user" ] || [ -z "$final_pass" ]; then
+        echo "Error: Usuario o contraseña en blanco. Guardado cancelado."
+        return 1
+    fi
+
+    {
+        echo "$final_user"
+        echo "$final_pass"
+    } > "$auth_file"
+
+    chmod 600 "$auth_file"
+
+    echo "✓ Credenciales guardadas: $auth_file"
+    echo "Configuración inicial completada con éxito."
+    return 0
+}
+
+permission_cleanup() {
+    local data_dir="${FVPN_DATA:-$HOME/VPN/FastestVPN/data}"
+    local pid_file="$data_dir/fvpn.pid"
+    local auth_file="$data_dir/auth.conf"
+    local logrotate_conf="/etc/logrotate.d/fvpn"
+
+    echo
+    echo "=== Proceso de Limpieza y Desinstalación ==="
+
+    if [ "$DEBUG" = "1" ]; then
+        echo "[DEBUG] PID_FILE = $pid_file"
+        echo "[DEBUG] AUTH_FILE = $auth_file"
+    fi
+
+    local cleaned=0
+
+    if [ -f "$pid_file" ]; then
+        local pid
+        pid=$(cat "$pid_file" 2>/dev/null)
+        rm -f "$pid_file"
+        echo "✓ Archivo PID residual eliminado (PID: ${pid:-Desconocido})"
+        cleaned=1
+    fi
+
+    if [ -f "$logrotate_conf" ]; then
+        sudo rm -f "$logrotate_conf" 2>/dev/null
+        echo "✓ Archivo de configuración de logrotate eliminado: $logrotate_conf"
+        cleaned=1
+    fi
+
+    if [ "$cleaned" -eq 0 ]; then
+        echo "✓ No se requieren archivos residuales para limpiar."
+    fi
+
+    echo "Proceso de limpieza completado."
+    return 0
+}
+
+show_setup_cleanup_menu() {
+    while true; do
+        echo ""
+        echo "========== Configuración de Inicialización y Limpieza =========="
+        echo " 1) Configuración Inicial (Permisos y Autenticación)"
+        echo " 2) Limpieza y Eliminación de Permisos"
+        echo " 0) Volver (Presione Enter para regresar)"
+        echo "--------------------------------------------------------------"
+        read -rp "Seleccione [0]: " sc_choice
+        sc_choice="${sc_choice:-0}"
+
+        case "$sc_choice" in
+            1) permission_setup ;;
+            2) permission_cleanup ;;
+            0) break ;;
+            *) echo "Opción no válida." ;;
+        esac
+    done
+}
+
+# ==============================================================================
+# Main Menu Display
+# ==============================================================================
+show_main_menu() {
+    while true; do
+        show_debug_registers
+
+        echo "========== FVPN v1.1.0 por Ton2Chan =========="
+        echo " 1) Conexión Rápida VPN (Conectar al servidor objetivo)"
+        echo " 2) Desconectar VPN"
+        echo " 3) Seleccionar Servidor y Conectar"
+        echo " 4) Configuración de Conexión (Modo, Protocolo, Filtro)"
+        echo " 5) Gestión de Servidores, Evaluación y Actualizaciones"
+        echo " 9) Inicialización y Limpieza (Permisos y Autenticación)"
+        echo " 0) Salir"
+        echo "-------------------------------------------"
+        show_status_header
+        
+        read -rp "Por favor, seleccione [0-9]: " choice
+
+        case "$choice" in
+            1) quick_connect ;;
+            2) disconnect_vpn ;;
+            3) select_vpn_server ;;
+            4) show_quick_connect_settings ;;
+            5) show_rating_menu ;;
+            9) show_setup_cleanup_menu ;;
+            0)
+                exit_fvpn
+                save_master_servers_buffer
+                save_all_settings
+                echo "Saliendo de FVPN."
+                break
+                ;;
+            *) echo "❌ Opción no válida." ;;
+        esac
+
+        echo ""
+    done
+}

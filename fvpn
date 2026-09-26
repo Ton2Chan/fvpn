@@ -1,12 +1,16 @@
 #!/bin/bash
 # ==============================================================================
 # FVPN - Main Executable Entrypoint
+# メイン実行エントリーポイント
 # ==============================================================================
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR" || exit 1
 
-# Source only official .sh files directly under the lib directory
+# ------------------------------------------------------------------------------
+# 1. Load Core Libraries (*.sh only)
+# コアライブラリの読み込み (lib ディレクトリ直下の正規 .sh のみ)
+# ------------------------------------------------------------------------------
 for f in ./lib/*.sh; do
     [ -f "$f" ] || continue
     [[ "$f" =~ \( ]] && continue
@@ -14,14 +18,68 @@ for f in ./lib/*.sh; do
 done
 
 # ------------------------------------------------------------------------------
-# Startup System Initialization & Main Menu Execution
+# 2. Language Switch & Auto-Detection
+# 言語の自動取得・切り替え処理
+# ------------------------------------------------------------------------------
+# Supported / Planned Languages:
+# en (English), ja (Japanese), pt (Portuguese), zh (Chinese), de (German),
+# fr (French), es (Spanish), hi (Hindi), ko (Korean), ru (Russian)
+#
+# Examples:
+#   ./fvpn --lang=pt  (Portuguese)
+#   ./fvpn --lang=ja  (Japanese)
+#   ./fvpn --lang=en  (English)
+
+# A) 隠しコマンド引数 (--lang=xx) の解析
+for arg in "$@"; do
+    case "$arg" in
+        --lang=*)
+            FVPN_LANG="${arg#*=}"
+            ;;
+    esac
+done
+
+# B) FVPN_LANG が未指定の場合、OS のシステム言語 (LANG) から自動取得 (例: "ja_JP.UTF-8" -> "ja")
+if [ -z "$FVPN_LANG" ]; then
+    sys_lang="${LANG:-en}"
+    FVPN_LANG="${sys_lang%%_*}"
+    FVPN_LANG="${FVPN_LANG%%.*}"
+fi
+
+# C) それでも空の場合はデフォルト値 'en' をセット
+FVPN_LANG="${FVPN_LANG:-en}"
+
+# ------------------------------------------------------------------------------
+# 3. Load Language UI Module (.shinc) with Mandatory English Fallback
+# 言語 UI モジュールのロード (存在しない場合は強制的に menu_en.shinc へフォールバック)
+# ------------------------------------------------------------------------------
+UI_FILE="./lib/menu_${FVPN_LANG}.shinc"
+
+if [ -f "$UI_FILE" ]; then
+    # 指定言語（またはOS自動判定言語）のファイルをロード
+    source "$UI_FILE"
+elif [ -f "./lib/menu_en.shinc" ]; then
+    # 対応ファイル（例: menu_it.shinc）が存在しない場合は、強制的に英語版をロード
+    source "./lib/menu_en.shinc"
+else
+    # 英語版すら存在しない場合のエラー保護
+    echo "[ERROR] UI module (menu_en.shinc) not found in ./lib/" >&2
+    exit 1
+fi
+
+# ------------------------------------------------------------------------------
+# 4. System Initialization & Main Menu Execution
+# 起動時システム初期化 ＆ メインメニュー実行
 # ------------------------------------------------------------------------------
 
-# 1. Setup physical layer
+# Setup physical network components
+# 物理層のお膳立て
 _phy_boot
 
-# 2. Set new status determination flags and display trap messages
+# Initialize status flags and trap displays
+# 状態判定フラグのセットとトラップ表示
 init_boot_process
 
-# 3. Invoke main menu
+# Launch main menu
+# メインメニューの呼び出し
 show_main_menu "$@"
