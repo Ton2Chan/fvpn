@@ -2,7 +2,6 @@
 # ==============================================================================
 # FVPN - Connection Engine & Buffer Logic (Non-UI Core Operations)
 # FVPN - 接続エンジン & バッファロジック (非UIコア操作)
-# Version : 1.1.0
 # ==============================================================================
 
 # Network connectivity check (Silent boolean test function)

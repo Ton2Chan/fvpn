@@ -1,0 +1,141 @@
+# German
+
+declare -gA MSG=(
+# show_status_header
+    ["msg_show_status_header_auth_prefix"]="Authentifizierung:"
+
+# connect_by_master_index_wm
+    ["msg_connect_by_master_index_wm_success"]=" ✓ VPN-Verbindung erfolgreich hergestellt."
+    ["msg_connect_by_master_index_wm_fail"]=" ❌ VPN-Verbindung fehlgeschlagen."
+    ["msg_connect_by_master_index_wm_lockdown"]=" 🔒 Der Datenverkehr wird durch den Kill Switch (LOCKDOWN) geschützt."
+
+# disconnect_vpn
+    ["msg_disconnect_vpn_executing"]="VPN wird getrennt..."
+    ["msg_disconnect_vpn_restored"]="✓ Direkter IP-Datenverkehr wurde wiederhergestellt."
+    ["msg_disconnect_vpn_failed"]="❌ Physische Prozesse konnten nicht gestoppt werden."
+
+# exit_fvpn
+    ["msg_exit_fvpn_warn"]="⚠️ VPN ist derzeit verbunden (oder der Schutz-Lock ist aktiv)."
+    ["msg_exit_fvpn_confirm"]="VPN trennen und beenden? [y/N]: "
+    ["msg_exit_fvpn_keep_lock"]="Der VPN-Schutz (Kill Switch) bleibt aktiv."
+
+# configure_connect_mode
+    ["msg_configure_connect_mode_opt1"]="1: Fest (immer mit dem ausgewählten Zielserver verbinden)"
+    ["msg_configure_connect_mode_opt2"]="2: Sequenziell (bei jeder Verbindung zum nächsten Server wechseln)"
+    ["msg_configure_connect_mode_opt3"]="3: Zufällig (jedes Mal automatisch einen passenden Server auswählen)"
+    ["msg_configure_connect_mode_prompt"]="Modus wählen [1-3]: "
+
+# configure_protocol_mode
+    ["msg_configure_protocol_mode_opt1"]="1: Nur UDP (schnell / empfohlen)"
+    ["msg_configure_protocol_mode_opt2"]="2: Nur TCP (Stabilität zuerst)"
+    ["msg_configure_protocol_mode_opt3"]="3: Gemischt (zwischen UDP und TCP wählen)"
+    ["msg_configure_protocol_mode_prompt"]="Protokoll wählen [1-3]: "
+    ["msg_configure_protocol_mode_invalid"]="⚠️ Ungültige Auswahl. Geben Sie einen Wert von 1 bis 3 ein."
+
+# configure_filter_level
+    ["msg_configure_filter_level_menu"]="--- Verbindungsfilterstufe auswählen ---\n 4)  [4] 3  2  1  0  : Nur Bewertung 4 (Favoriten) auswählen\n 3)  [4  3] 2  1  0  : Bewertung 3 (nutzbar) und höher auswählen\n 2)  [4  3  2] 1  0  : Bewertung 2 (Standard / nicht bewertet) und höher auswählen\n 1)  [4  3  2  1] 0  : Bewertung 1 (kaum nutzbar) und höher auswählen\n 0)  [4  3  2  1  0] : Alle Server auswählen\n---------------------------------------------------"
+    ["msg_configure_filter_level_prompt"]="Stufe wählen [0-4 / Enter zum Zurückkehren]: "
+
+# update_servers
+    ["msg_update_servers_net_error"]="Keine Verbindung zum Netzwerk möglich."
+    ["msg_update_servers_dl_fail"]="⚠️ Download der Aktualisierungsdatei fehlgeschlagen."
+    ["msg_update_servers_apply_fail"]="⚠️ Anwenden des Aktualisierungspakets fehlgeschlagen."
+    ["msg_update_servers_success"]="✓ Aktualisierung der Serverliste erfolgreich abgeschlossen."
+
+# export_server_ratings
+    ["msg_export_server_ratings_dir_error"]="Fehler: Zielverzeichnis (%s) konnte nicht erstellt werden."
+    ["msg_export_server_ratings_no_data"]="Fehler: Keine Serverdaten zum Exportieren vorhanden."
+    ["msg_export_server_ratings_success"]="✓ %s Serverbewertungen exportiert."
+    ["msg_export_server_ratings_out_path"]="  Ausgabe: %s"
+    ["msg_export_server_ratings_no_target"]="Fehler: Keine Daten zum Exportieren vorhanden."
+
+# import_server_ratings
+    ["msg_import_server_ratings_no_file"]="Fehler: Keine Importdatei gefunden."
+    ["msg_import_server_ratings_check_path"]="  Prüfpfad: %s"
+    ["msg_import_server_ratings_executing"]="Serverbewertungen werden importiert..."
+    ["msg_import_server_ratings_no_valid_data"]="Warnung: Keine gültigen Bewertungsdaten in der Importdatei gefunden."
+    ["msg_import_server_ratings_success"]="✓ %s Serverbewertungen importiert."
+    ["msg_import_server_ratings_no_change"]="Info: Keine Änderungen an den Bewertungsdaten."
+
+# quick_connect
+    ["msg_quick_connect_no_active_servers"]="❌ Keine verbindbaren Server haben den aktuellen Filter bestanden."
+
+# show_quick_connect_settings
+    ["msg_show_quick_connect_settings_menu"]="========== Einstellungen für Schnellverbindung ==========\n 1) Verbindungsmodus : %s\n 2) Protokoll        : %s\n 3) Filterstufe      : %s\n 0) Zurück (Enter kehrt ebenfalls zurück)\n----------------------------------"
+    ["msg_show_quick_connect_settings_prompt"]="Auswahl [0]: "
+    ["msg_show_quick_connect_settings_invalid"]="Ungültige Auswahl."
+    ["msg_show_quick_connect_settings_mode_fixed"]="[1:Fest] 2:Sequenziell  3:Zufällig"
+    ["msg_show_quick_connect_settings_mode_seq"]=" 1:Fest [2:Sequenziell] 3:Zufällig"
+    ["msg_show_quick_connect_settings_mode_random"]=" 1:Fest  2:Sequenziell [3:Zufällig]"
+
+# reset_ratings_menu
+    ["msg_reset_ratings_menu_confirm"]="Alle Serverbewertungen auf den Standardwert (2) zurücksetzen? (y/N): "
+    ["msg_reset_ratings_menu_success"]="✓ Vorgang abgeschlossen. (Filterstufe auf 0 zurückgesetzt)"
+    ["msg_reset_ratings_menu_canceled"]="Abgebrochen."
+
+# manage_protocol_servers
+    ["msg_manage_protocol_servers_no_servers"]="(Keine passenden %s-Server)"
+    ["msg_manage_protocol_servers_list_header"]="========== %s Serverliste / Bewertungseinstellungen =========="
+    ["msg_manage_protocol_servers_legend"]=" Bewertungslegende: 4:Favorit, 2:Nicht bewertet, 1:Kaum nutzbar, 3:Nutzbar, 0:Ausgeschlossen"
+    ["msg_manage_protocol_servers_select_prompt"]="Servernummer zum Ändern der Bewertung wählen [Enter oder 0 zum Zurückkehren]: "
+    ["msg_manage_protocol_servers_out_of_range"]="⚠️ Geben Sie einen Wert von 1 bis %s ein."
+    ["msg_manage_protocol_servers_val_prompt"]="Neue Bewertung eingeben [0-4]: "
+    ["msg_manage_protocol_servers_invalid_val"]="⚠️ Geben Sie einen Wert von 0 bis 4 ein."
+
+# select_vpn_server
+    ["msg_select_vpn_server_title"]="========== Mit bestimmtem Server verbinden =========="
+    ["msg_select_vpn_server_opts"]=" 1) UDP\n 2) TCP\n 0) Zurück (Enter kehrt ebenfalls zurück)"
+    ["msg_select_vpn_server_proto_prompt"]="Auswahl [0-2]: "
+    ["msg_select_vpn_server_canceled"]="Abgebrochen."
+    ["msg_select_vpn_server_invalid_proto"]="⚠️ Ungültige Auswahl. Geben Sie einen Wert von 0 bis 2 ein."
+    ["msg_select_vpn_server_no_servers"]="⚠️ Für das ausgewählte Protokoll (%s) gibt es 0 Server, die den Filter bestehen."
+    ["msg_select_vpn_server_list_header"]="--- Verfügbare Server (%s : %s) ---"
+    ["msg_select_vpn_server_num_prompt"]="Servernummer zum Verbinden eingeben (0:Zurück): "
+    ["msg_select_vpn_server_invalid_num"]="⚠️ Ungültige Eingabe. Geben Sie eine Zahl ein."
+    ["msg_select_vpn_server_not_found"]="⚠️ Die Servernummer [ %s ] existiert nicht in der %s-Filterliste."
+
+# show_rating_menu
+    ["msg_show_rating_menu_menu"]="========== Serververwaltung / Bewertungsmenü ==========\n 1) UDP-Serverliste / Bewertung\n 2) TCP-Serverliste / Bewertung\n 3) Serverbewertungen exportieren\n 4) Serverbewertungen importieren\n 5) Bewertungen zurücksetzen\n 6) Serverinformationen aktualisieren\n 7) VPN-Verbindungs-Timeout konfigurieren\n 0) Zurück (Enter kehrt ebenfalls zurück)\n------------------------------------------------"
+    ["msg_show_rating_menu_prompt"]="Auswahl [0]: "
+    ["msg_show_rating_menu_invalid"]="Ungültige Auswahl."
+
+# configure_vpn_timeout
+    ["msg_configure_vpn_timeout_title"]="--- VPN-Verbindungs-Timeout-Einstellungen ---"
+    ["msg_configure_vpn_timeout_curr_val"]=" Aktueller Wert: %s Sekunden"
+    ["msg_configure_vpn_timeout_prompt"]="Neues Timeout in Sekunden eingeben [1-120 / Enter zum Zurückkehren]: "
+    ["msg_configure_vpn_timeout_success"]="✓ VPN-Timeout auf %s Sekunden gesetzt."
+
+# permission_setup
+    ["msg_permission_setup_title"]="=== Ersteinrichtung (Berechtigungen & Authentifizierung) ==="
+    ["msg_permission_setup_step1"]="1. Berechtigungen und Verzeichnisse werden eingerichtet..."
+    ["msg_permission_setup_dir_created"]="   ✓ Datenverzeichnis erstellt: %s"
+    ["msg_permission_setup_log_created"]="   ✓ Logverzeichnis erstellt: %s"
+    ["msg_permission_setup_step2"]="1.5. Systemweite Logverwaltung (logrotate) wird eingerichtet..."
+    ["msg_permission_setup_logrotate_success"]="   ✓ logrotate-Konfiguration installiert: %s"
+    ["msg_permission_setup_logrotate_fail"]="   ⚠️ Installation der logrotate-Konfiguration fehlgeschlagen (sudo-Berechtigungen prüfen)."
+    ["msg_permission_setup_step3"]="2. FastestVPN-ID/Passwort eingeben..."
+    ["msg_permission_setup_user_prompt"]="FastestVPN-Benutzer-ID (E-Mail-Adresse): "
+    ["msg_permission_setup_pass_prompt"]="Passwort: "
+    ["msg_permission_setup_auth_success"]="   ✓ ID/Passwort-Zugangsdaten eingerichtet und gespeichert."
+    ["msg_permission_setup_auth_fail"]="   ⚠️ Speichern der ID/Passwort-Zugangsdaten fehlgeschlagen."
+
+# permission_cleanup
+    ["msg_permission_cleanup_title"]="=== Beenden-Bereinigung (Bereinigung & Entfernen der Zugangsdaten) ==="
+    ["msg_permission_cleanup_pid_removed"]="✓ Verbleibende PID-Datei entfernt (PID: %s)"
+    ["msg_permission_cleanup_pid_unknown"]="Unbekannt"
+    ["msg_permission_cleanup_logrotate_removed"]="✓ logrotate-Konfigurationsdatei entfernt: %s"
+    ["msg_permission_cleanup_auth_removed"]="✓ Authentifizierungsdatei (auth.conf) entfernt."
+    ["msg_permission_cleanup_no_cleanup"]="✓ Keine Dateien mussten entfernt oder bereinigt werden."
+    ["msg_permission_cleanup_cleanup_done"]="Aufräumen beim Beenden abgeschlossen."
+
+# show_setup_cleanup_menu
+    ["msg_show_setup_cleanup_menu_menu"]="========== Einstellungen für Start / Stopp ==========\n 1) FVPN verwenden (Berechtigungen / Authentifizierung) * Vor der Verwendung ausführen.\n 2) FVPN-Nutzung stoppen (Berechtigungen entziehen) * Vor dem Entfernen der Anwendung ausführen.\n 0) Zurück (Enter kehrt ebenfalls zurück)\n--------------------------------------------"
+    ["msg_show_setup_cleanup_menu_prompt"]="Auswahl [0]: "
+    ["msg_show_setup_cleanup_menu_invalid"]="Ungültige Auswahl."
+
+# show_main_menu
+    ["msg_show_main_menu_opts"]=" 1) Schnelle VPN-Verbindung (mit Zielserver verbinden)\n 2) VPN trennen\n 3) Mit einem bestimmten Server verbinden\n 4) Einstellungen der Schnellverbindung (Modus / Protokoll / Filter)\n 5) Serververwaltung / Bewertung / Aktualisierung\n 9) Verwendung starten / stoppen (Berechtigungen / Authentifizierung)\n 0) Beenden"
+    ["msg_show_main_menu_prompt"]="Auswahl [0-9]: "
+    ["msg_show_main_menu_exit"]="FVPN wird beendet."
+    ["msg_show_main_menu_invalid"]="❌ Ungültige Auswahl."
+)

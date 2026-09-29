@@ -1,0 +1,141 @@
+# Japanese
+
+declare -gA MSG=(
+# show_status_header
+    ["msg_show_status_header_auth_prefix"]="認証:"
+
+# connect_by_master_index_wm
+    ["msg_connect_by_master_index_wm_success"]=" ✓ VPN接続が正常に確立しました。"
+    ["msg_connect_by_master_index_wm_fail"]=" ❌ VPN接続に失敗しました。"
+    ["msg_connect_by_master_index_wm_lockdown"]=" 🔒 キルスイッチ(LOCKDOWN)により通信を保護中"
+
+# disconnect_vpn
+    ["msg_disconnect_vpn_executing"]="VPN切断処理を実行中..."
+    ["msg_disconnect_vpn_restored"]="✓ 生IP通信へ復元しました。"
+    ["msg_disconnect_vpn_failed"]="❌ 物理プロセスの停止に失敗しました。"
+
+# exit_fvpn
+    ["msg_exit_fvpn_warn"]="⚠️  現在 VPN 接続中 (または保護ロック中) です。"
+    ["msg_exit_fvpn_confirm"]="VPNを切断して終了しますか？ [y/N]: "
+    ["msg_exit_fvpn_keep_lock"]="VPN保護状態 (キルスイッチ) を継続します。"
+
+# configure_connect_mode
+    ["msg_configure_connect_mode_opt1"]="1: 固定アクセス (常に選択されている注目サーバーへ接続)"
+    ["msg_configure_connect_mode_opt2"]="2: 順番アクセス (接続ごとに次のサーバーへローテーション)"
+    ["msg_configure_connect_mode_opt3"]="3: ランダムアクセス (条件に合うサーバーから毎回自動選出)"
+    ["msg_configure_connect_mode_prompt"]="モード選択 [1-3]: "
+
+# configure_protocol_mode
+    ["msg_configure_protocol_mode_opt1"]="1: UDP のみ (高速・推奨)"
+    ["msg_configure_protocol_mode_opt2"]="2: TCP のみ (安定重視)"
+    ["msg_configure_protocol_mode_opt3"]="3: mix (UDP と TCP の両方から選択)"
+    ["msg_configure_protocol_mode_prompt"]="プロトコル選択 [1-3]: "
+    ["msg_configure_protocol_mode_invalid"]="⚠️  無効な選択肢です。1-3 の範囲で入力してください。"
+
+# configure_filter_level
+    ["msg_configure_filter_level_menu"]="--- 接続フィルターレベルの選択 ---\n 4)  [4] 3  2  1  0  : 評価4(お気に入り)のみ選択\n 3)  [4  3] 2  1  0  : 評価3(それなり)以上を選択\n 2)  [4  3  2] 1  0  : 評価2(標準/無評価)以上を選択\n 1)  [4  3  2  1] 0  : 評価1(なんとか)以上を選択\n 0)  [4  3  2  1  0] : すべてのサーバーを選択\n---------------------------------------------------"
+    ["msg_configure_filter_level_prompt"]="レベル選択 [0-4 / Enterで戻る]: "
+
+# update_servers
+    ["msg_update_servers_net_error"]="ネットに接続できません。"
+    ["msg_update_servers_dl_fail"]="⚠️ 更新ファイルのダウンロードに失敗しました。"
+    ["msg_update_servers_apply_fail"]="⚠️ 更新パッケージの適用に失敗しました。"
+    ["msg_update_servers_success"]="✓ サーバーリストの更新が正常に完了しました。"
+
+# export_server_ratings
+    ["msg_export_server_ratings_dir_error"]="エラー: 保存先ディレクトリ (%s) を作成できませんでした。"
+    ["msg_export_server_ratings_no_data"]="エラー: エクスポートするサーバーデータが存在しません。"
+    ["msg_export_server_ratings_success"]="✓ %s 件のサーバー評価データをエクスポートしました。"
+    ["msg_export_server_ratings_out_path"]="  出力先: %s"
+    ["msg_export_server_ratings_no_target"]="エラー: エクスポート対象のデータがありませんでした。"
+
+# import_server_ratings
+    ["msg_import_server_ratings_no_file"]="エラー: インポート対象のファイルが見つかりません。"
+    ["msg_import_server_ratings_check_path"]="  確認パス: %s"
+    ["msg_import_server_ratings_executing"]="評価データをインポートしています..."
+    ["msg_import_server_ratings_no_valid_data"]="警告: インポートファイル内に有効な評価データが見つかりませんでした。"
+    ["msg_import_server_ratings_success"]="✓ %s 件のサーバー評価データをインポートしました。"
+    ["msg_import_server_ratings_no_change"]="情報: 評価データの変更はありませんでした。"
+
+# quick_connect
+    ["msg_quick_connect_no_active_servers"]="❌ フィルターを通過した接続可能なサーバーが存在しません。"
+
+# show_quick_connect_settings
+    ["msg_show_quick_connect_settings_menu"]="========== 簡易接続設定 ==========\n 1) 接続モード変更   : %s\n 2) プロトコル変更   : %s\n 3) フィルタレベル   : %s\n 0) 戻る (Enterのみでも戻ります)\n----------------------------------"
+    ["msg_show_quick_connect_settings_prompt"]="選択 [0]: "
+    ["msg_show_quick_connect_settings_invalid"]="無効な選択肢です。"
+    ["msg_show_quick_connect_settings_mode_fixed"]="[1:固定] 2:順番  3:ランダム"
+    ["msg_show_quick_connect_settings_mode_seq"]=" 1:固定 [2:順番] 3:ランダム"
+    ["msg_show_quick_connect_settings_mode_random"]=" 1:固定  2:順番 [3:ランダム]"
+
+# reset_ratings_menu
+    ["msg_reset_ratings_menu_confirm"]="すべてのサーバー評価をデフォルト(2)に初期化しますか？ (y/N): "
+    ["msg_reset_ratings_menu_success"]="✓ 処理が完了しました。(フィルターレベルを0にリセットしました)"
+    ["msg_reset_ratings_menu_canceled"]="キャンセルしました。"
+
+# manage_protocol_servers
+    ["msg_manage_protocol_servers_no_servers"]="(該当する %s サーバーがありません)"
+    ["msg_manage_protocol_servers_list_header"]="========== %s サーバー一覧・評価設定 =========="
+    ["msg_manage_protocol_servers_legend"]=" 評価凡例: 4:お気に入り, 2:無評価, 1:なんとか, 3:それなり, 0:除外"
+    ["msg_manage_protocol_servers_select_prompt"]="評価を変更するサーバー番号を選択 [Enterまたは0で戻る]: "
+    ["msg_manage_protocol_servers_out_of_range"]="⚠️ 1 から %s の範囲で入力してください。"
+    ["msg_manage_protocol_servers_val_prompt"]="新しい評価を入力してください [0-4]: "
+    ["msg_manage_protocol_servers_invalid_val"]="⚠️ 0から4の範囲で入力してください。"
+
+# select_vpn_server
+    ["msg_select_vpn_server_title"]="========== サーバー個別指定接続 =========="
+    ["msg_select_vpn_server_opts"]=" 1) UDP\n 2) TCP\n 0) 戻る (Enterのみでも戻ります)"
+    ["msg_select_vpn_server_proto_prompt"]="選択 [0-2]: "
+    ["msg_select_vpn_server_canceled"]="キャンセルしました。"
+    ["msg_select_vpn_server_invalid_proto"]="⚠️ 無効な選択です。0-2 の範囲で入力してください。"
+    ["msg_select_vpn_server_no_servers"]="⚠️ 選択されたプロトコル (%s) のフィルター通過サーバーは 0 件です。"
+    ["msg_select_vpn_server_list_header"]="--- 選択可能サーバー一覧 (%s : %s件) ---"
+    ["msg_select_vpn_server_num_prompt"]="接続するサーバー番号を入力 (0:戻る): "
+    ["msg_select_vpn_server_invalid_num"]="⚠️ 無効な入力です。数値で指定してください。"
+    ["msg_select_vpn_server_not_found"]="⚠️ サーバー番号 [ %s ] は %s のフィルター通過一覧に存在しません。"
+
+# show_rating_menu
+    ["msg_show_rating_menu_menu"]="========== サーバー管理・評価メニュー ==========\n 1) UDP サーバーの一覧・評価設定\n 2) TCP サーバーの一覧・評価設定\n 3) サーバー評価をエクスポート\n 4) サーバー評価をインポート\n 5) 評価のリセット\n 6) サーバー情報の更新\n 7) VPN接続タイムアウト設定\n 0) 戻る (Enterのみでも戻ります)\n------------------------------------------------"
+    ["msg_show_rating_menu_prompt"]="選択 [0]: "
+    ["msg_show_rating_menu_invalid"]="無効な選択です。"
+
+# configure_vpn_timeout
+    ["msg_configure_vpn_timeout_title"]="--- VPN接続タイムアウト設定 ---"
+    ["msg_configure_vpn_timeout_curr_val"]=" 現在の値: %s 秒"
+    ["msg_configure_vpn_timeout_prompt"]="新しいタイムアウト秒数を入力 [1-120 / Enterで戻る]: "
+    ["msg_configure_vpn_timeout_success"]="✓ タイムアウトを %s 秒に設定しました。"
+
+# permission_setup
+    ["msg_permission_setup_title"]="=== 初期設定（権限付与 & 認証情報設定） ==="
+    ["msg_permission_setup_step1"]="1. 権限・ディレクトリのセットアップ中..."
+    ["msg_permission_setup_dir_created"]="   ✓ データディレクトリを作成しました: %s"
+    ["msg_permission_setup_log_created"]="   ✓ ログディレクトリを作成しました: %s"
+    ["msg_permission_setup_step2"]="1.5. OSログ管理 (logrotate) のセットアップ中..."
+    ["msg_permission_setup_logrotate_success"]="   ✓ logrotate 設定を配置しました: %s"
+    ["msg_permission_setup_logrotate_fail"]="   ⚠️ logrotate 設定の配置に失敗しました (sudo 権限を確認してください)"
+    ["msg_permission_setup_step3"]="2. ID/パスワード認証情報の入力..."
+    ["msg_permission_setup_user_prompt"]="設定する FastestVPN のユーザーID (メールアドレス): "
+    ["msg_permission_setup_pass_prompt"]="パスワード: "
+    ["msg_permission_setup_auth_success"]="   ✓ ID/パスワード認証情報を設定・保存しました。"
+    ["msg_permission_setup_auth_fail"]="   ⚠️ ID/パスワード認証情報の保存に失敗しました。"
+
+# permission_cleanup
+    ["msg_permission_cleanup_title"]="=== 終了処理（クリーンアップ・認証情報破棄） ==="
+    ["msg_permission_cleanup_pid_removed"]="✓ 残存PIDファイルを削除しました (PID: %s)"
+    ["msg_permission_cleanup_pid_unknown"]="不明"
+    ["msg_permission_cleanup_logrotate_removed"]="✓ logrotate 設定ファイルを削除しました: %s"
+    ["msg_permission_cleanup_auth_removed"]="✓ 認証情報ファイル (auth.conf) を破棄しました。"
+    ["msg_permission_cleanup_no_cleanup"]="✓ 削除・クリーンアップが必要なファイルはありませんでした。"
+    ["msg_permission_cleanup_cleanup_done"]="終了処理が完了しました。"
+
+# show_setup_cleanup_menu
+    ["msg_show_setup_cleanup_menu_menu"]="========== 使用開始・使用停止設定 ==========\n 1) 使用開始 (権限付与・認証設定) ※ 使用開始する前に実行してください。\n 2) 使用停止 (権限解除) ※ 当アプリを削除する前に実行してください。\n 0) 戻る (Enterのみでも戻ります)\n--------------------------------------------"
+    ["msg_show_setup_cleanup_menu_prompt"]="選択 [0]: "
+    ["msg_show_setup_cleanup_menu_invalid"]="無効な選択です。"
+
+# show_main_menu
+    ["msg_show_main_menu_opts"]=" 1) 簡易VPN接続 (注目サーバーへ接続)\n 2) VPN切断\n 3) サーバー個別指定接続\n 4) 簡易接続設定 (モード・プロトコル・フィルタ)\n 5) サーバー管理・評価・更新\n 9) 使用開始・使用停止 (権限認証)\n 0) 終了"\n    ["msg_show_main_menu_prompt"]="選択してください [0-9]: "
+    ["msg_show_main_menu_prompt"]="選択してください [0-9]: "
+    ["msg_show_main_menu_exit"]="FVPN を終了します。"
+    ["msg_show_main_menu_invalid"]="❌ 無効な選択肢です。"
+)

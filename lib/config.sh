@@ -2,10 +2,12 @@
 # ==============================================================================
 # FVPN Common Configuration & Constant Management Module (lib/config.sh)
 # FVPN 共通設定・定数管理モジュール
-# Version : 1.1.0
 # ==============================================================================
 
-# 0. Base Path Auto-Detection / ベースパス自動判定
+# 0. System Information & Base Path Auto-Detection / システム情報＆ベースパス自動判定
+export FVPN_VERSION="1.1.1"
+readonly FVPN_VERSION
+
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 export FVPN_HOME="$(cd "$SCRIPT_DIR/.." && pwd)"
 
@@ -19,7 +21,7 @@ export FILTER_LEVEL=1     # 1: Show All, 0-4: Rating Filter / 1: 全表示, 0〜
 export FVPN_LANG="${FVPN_LANG:-}"
 
 # Official Update URL / 公式アップデートURL
-export OFFICIAL_UPDATE_URL="${OFFICIAL_UPDATE_URL:-https://support.fastestvpn.com/download/fastestvpn_ovpn//}"
+export OFFICIAL_UPDATE_URL="${OFFICIAL_UPDATE_URL:-https://support.fastestvpn.com/download/fastestvpn_ovpn/}"
 
 # Auto-update & Timer Default Settings / 自動更新・タイマーデフォルト設定
 export TIMEOUT_AUTO_UPDATE="${TIMEOUT_AUTO_UPDATE:-5}"
@@ -47,7 +49,7 @@ export LENGTH_INDEX=4
 export OFFSET_RATING=8           # Rating value ("0"-"4") / 評価値 ("0"〜"4")
 export LENGTH_RATING=1
 
-export OFFSET_IP=11              # IP address position / 例: プロトコル等の後ろの適切な位置
+export OFFSET_IP=11              # IP address position / IPアドレス位置
 export LENGTH_IP=15              # Fixed length: 15 bytes / 固定長 15バイト
 
 export OFFSET_PORT=27            # Port number start position / ポート番号開始位置
@@ -59,7 +61,7 @@ export LENGTH_PROTO=1
 export OFFSET_FNAME=35           # File name (e.g. "australia-stream-udp.ovpn") / ファイル名
 
 # System & Debug Settings / システム・デバッグ設定
-export DEBUG="${DEBUG:-0}"       # 0: Disabled, 1: Simple Debug, 2: Register Dump / 0: 無効, 1: 簡易デバッグ, 2: +詳細レジスタダンプ
+export DEBUG="${DEBUG:-0}"       # 0: Disabled, 1: Simple Debug (Dump), 2: Physical System Inspector / 0: 無効, 1: 簡易レジスタダンプ, 2: 物理システム状態診断
 
 # 2. Physical Layer (Directory & File Path Abstraction) / 物理層 (ディレクトリ & ファイルパス抽象化)
 export FVPN_DATA="${FVPN_HOME}/data"

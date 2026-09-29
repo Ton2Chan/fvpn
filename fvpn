@@ -21,9 +21,9 @@ done
 # 2. Language Switch & Auto-Detection
 # 言語の自動取得・切り替え処理
 # ------------------------------------------------------------------------------
-# Supported / Planned Languages:
+# Supported / Planned ISO 639-1 Language Codes:
 # en (English), ja (Japanese), pt (Portuguese), zh (Chinese), de (German),
-# fr (French), es (Spanish), hi (Hindi), ko (Korean), ru (Russian)
+# fr (French), es (Spanish), hi (Hindi), ko (Korean), ru (Russian), etc.
 #
 # Examples:
 #   ./fvpn --lang=pt  (Portuguese)
@@ -50,21 +50,26 @@ fi
 FVPN_LANG="${FVPN_LANG:-en}"
 
 # ------------------------------------------------------------------------------
-# 3. Load Language UI Module (.shinc) with Mandatory English Fallback
-# 言語 UI モジュールのロード (存在しない場合は強制的に menu_en.shinc へフォールバック)
+# 3. Dynamic Language Resource Loader (lang/*.shinc) with Mandatory English Fallback
+# 言語リソースの動的ロード (英語ベースのフォールバック + ターゲット言語の動的上書き)
 # ------------------------------------------------------------------------------
-UI_FILE="./lib/menu_${FVPN_LANG}.shinc"
+LANG_DIR="./lang"
+BASE_LANG_FILE="${LANG_DIR}/en.shinc"
+TARGET_LANG_FILE="${LANG_DIR}/${FVPN_LANG}.shinc"
 
-if [ -f "$UI_FILE" ]; then
-    # 指定言語（またはOS自動判定言語）のファイルをロード
-    source "$UI_FILE"
-elif [ -f "./lib/menu_en.shinc" ]; then
-    # 対応ファイル（例: menu_it.shinc）が存在しない場合は、強制的に英語版をロード
-    source "./lib/menu_en.shinc"
+# 1. Load English base resource first (Ensures missing translation keys fallback to English seamlessly)
+# 1. ベースとなる英語リソースを最初にロード (辞書キーの未定義エラーを安全に防止)
+if [ -f "$BASE_LANG_FILE" ]; then
+    source "$BASE_LANG_FILE"
 else
-    # 英語版すら存在しない場合のエラー保護
-    echo "[ERROR] UI module (menu_en.shinc) not found in ./lib/" >&2
+    echo "[ERROR] Base language resource (lang/en.shinc) not found." >&2
     exit 1
+fi
+
+# 2. Dynamic Override: Load requested language resource if it exists (No code modification needed for new languages!)
+# 2. 動的上書き: ターゲット言語ファイルが存在すれば上書きロード (新言語ファイルを配置するだけで即座に対応可能)
+if [ "$FVPN_LANG" != "en" ] && [ -f "$TARGET_LANG_FILE" ]; then
+    source "$TARGET_LANG_FILE"
 fi
 
 # ------------------------------------------------------------------------------

@@ -1,0 +1,141 @@
+# Arabic
+
+declare -gA MSG=(
+# show_status_header
+    ["msg_show_status_header_auth_prefix"]="المصادقة:"
+
+# connect_by_master_index_wm
+    ["msg_connect_by_master_index_wm_success"]=" ✓  ✓ تم إنشاء اتصال VPN بنجاح."
+    ["msg_connect_by_master_index_wm_fail"]=" ❌  ❌ فشل اتصال VPN."
+    ["msg_connect_by_master_index_wm_lockdown"]=" 🔒  🔒 حركة المرور محمية بواسطة Kill Switch (LOCKDOWN)."
+
+# disconnect_vpn
+    ["msg_disconnect_vpn_executing"]="جارٍ قطع اتصال VPN..."
+    ["msg_disconnect_vpn_restored"]="✓ تمت استعادة حركة IP المباشرة."
+    ["msg_disconnect_vpn_failed"]="❌ تعذر إيقاف العمليات الفعلية."
+
+# exit_fvpn
+    ["msg_exit_fvpn_warn"]="⚠️ ⚠️ VPN متصل حاليًا (أو قفل الحماية نشط)."
+    ["msg_exit_fvpn_confirm"]="قطع اتصال VPN والخروج؟ [y/N]: "
+    ["msg_exit_fvpn_keep_lock"]="ستظل حماية VPN (Kill Switch) نشطة."
+
+# configure_connect_mode
+    ["msg_configure_connect_mode_opt1"]="1: ثابت (always اتصال to the المحدد target خادم)"
+    ["msg_configure_connect_mode_opt2"]="2: تسلسلي (rotate to the next خادم on each اتصال)"
+    ["msg_configure_connect_mode_opt3"]="3: عشوائي (automatically select a matching خادم each time)"
+    ["msg_configure_connect_mode_prompt"]="اختر الوضع [1-3]: "
+
+# configure_protocol_mode
+    ["msg_configure_protocol_mode_opt1"]="1: UDP فقط (fast / recommended)"
+    ["msg_configure_protocol_mode_opt2"]="2: TCP فقط (stability first)"
+    ["msg_configure_protocol_mode_opt3"]="3: مختلط (select from both UDP and TCP)"
+    ["msg_configure_protocol_mode_prompt"]="اختر البروتوكول [1-3]: "
+    ["msg_configure_protocol_mode_invalid"]="⚠️ اختيار غير صالح. أدخل قيمة من 1 إلى 3."
+
+# configure_filter_level
+    ["msg_configure_filter_level_menu"]="--- اختر اتصال تصفية المستوى ---\n 4)  [4] 3  2  1  0  : اختر تقييم 4 (favorites) only\n 3)  [4  3] 2  1  0  : اختر تقييم 3 (usable) and above\n 2)  [4  3  2] 1  0  : اختر تقييم 2 (standard / unrated) and above\n 1)  [4  3  2  1] 0  : اختر تقييم 1 (barely usable) and above\n 0)  [4  3  2  1  0] : اختر all خوادم\n---------------------------------------------------"
+    ["msg_configure_filter_level_prompt"]="اختر المستوى [0-4 / Enter للعودة]: "
+
+# update_servers
+    ["msg_update_servers_net_error"]="تعذر الاتصال بالشبكة."
+    ["msg_update_servers_dl_fail"]="⚠️ فشل تنزيل ملف التحديث."
+    ["msg_update_servers_apply_fail"]="⚠️ فشل تطبيق حزمة التحديث."
+    ["msg_update_servers_success"]="✓ اكتمل تحديث قائمة الخوادم بنجاح."
+
+# export_server_ratings
+    ["msg_export_server_ratings_dir_error"]="خطأ: فشل to create the destination دليل (%s)."
+    ["msg_export_server_ratings_no_data"]="خطأ: لا خادم data is available to export."
+    ["msg_export_server_ratings_success"]="✓ Exported %s خادم تقييم records."
+    ["msg_export_server_ratings_out_path"]="  المخرجات: %s"
+    ["msg_export_server_ratings_no_target"]="خطأ: لا data was available for export."
+
+# import_server_ratings
+    ["msg_import_server_ratings_no_file"]="خطأ: لا ملف to import was found."
+    ["msg_import_server_ratings_check_path"]="  مسار التحقق: %s"
+    ["msg_import_server_ratings_executing"]="Importing خادم تقييم data..."
+    ["msg_import_server_ratings_no_valid_data"]="تحذير: لا valid تقييم data was found in the import ملف."
+    ["msg_import_server_ratings_success"]="✓ Imported %s خادم تقييم records."
+    ["msg_import_server_ratings_no_change"]="معلومات: لا changes were made to the تقييم data."
+
+# quick_connect
+    ["msg_quick_connect_no_active_servers"]="❌ لا اتصالable خوادم passed the الحالي تصفية."
+
+# show_quick_connect_settings
+    ["msg_show_quick_connect_settings_menu"]="========== إعدادات الاتصال السريع ==========\n 1) وضع الاتصال : %s\n 2) البروتوكول   : %s\n 3) مستوى التصفية : %s\n 0) رجوع (Enter للرجوع أيضًا)\n----------------------------------"
+    ["msg_show_quick_connect_settings_prompt"]="اختيار [0]: "
+    ["msg_show_quick_connect_settings_invalid"]="اختيار غير صالح."
+    ["msg_show_quick_connect_settings_mode_fixed"]="[1:ثابت] 2:تسلسلي  3:عشوائي"
+    ["msg_show_quick_connect_settings_mode_seq"]=" 1:ثابت [2:تسلسلي] 3:عشوائي"
+    ["msg_show_quick_connect_settings_mode_random"]=" 1:ثابت  2:تسلسلي [3:عشوائي]"
+
+# reset_ratings_menu
+    ["msg_reset_ratings_menu_confirm"]="Initialize all خادم تقييمات to the default (2)? (y/N): "
+    ["msg_reset_ratings_menu_success"]="✓ Operation completed. (تصفية المستوى reset to 0)"
+    ["msg_reset_ratings_menu_canceled"]="تم الإلغاء."
+
+# manage_protocol_servers
+    ["msg_manage_protocol_servers_no_servers"]="(لا matching %s خوادم)"
+    ["msg_manage_protocol_servers_list_header"]="========== %s خادم List / Rating Settings =========="
+    ["msg_manage_protocol_servers_legend"]=" دليل التقييم: 4:مفضّل، 2:غير مُقيّم، 1:صالح بالكاد، 3:صالح، 0:مستبعد"
+    ["msg_manage_protocol_servers_select_prompt"]="اختر the خادم number to change the تقييم [Enter or 0 to رجوع]: "
+    ["msg_manage_protocol_servers_out_of_range"]="⚠️ Enter a قيمة from 1 to %s."
+    ["msg_manage_protocol_servers_val_prompt"]="Enter the new تقييم [0-4]: "
+    ["msg_manage_protocol_servers_invalid_val"]="⚠️ Enter a قيمة from 0 to 4."
+
+# select_vpn_server
+    ["msg_select_vpn_server_title"]="========== Connect to Specific خادم =========="
+    ["msg_select_vpn_server_opts"]=" 1) UDP\n 2) TCP\n 0) رجوع (Enter also رجوعs)"
+    ["msg_select_vpn_server_proto_prompt"]="اختر [0-2]: "
+    ["msg_select_vpn_server_canceled"]="تم الإلغاء."
+    ["msg_select_vpn_server_invalid_proto"]="⚠️ اختيار غير صالح. Enter a value from 0 to 2."
+    ["msg_select_vpn_server_no_servers"]="⚠️ There are 0 تصفية-passed خوادم for the المحدد البروتوكول (%s)."
+    ["msg_select_vpn_server_list_header"]="--- Available خادمs (%s : %s) ---"
+    ["msg_select_vpn_server_num_prompt"]="Enter the خادم number to اتصال (0:رجوع): "
+    ["msg_select_vpn_server_invalid_num"]="⚠️ غير صالح input. Enter a number."
+    ["msg_select_vpn_server_not_found"]="⚠️ خادم number [ %s ] does not exist in the %s تصفية-passed list."
+
+# show_rating_menu
+    ["msg_show_rating_menu_menu"]="========== إدارة الخوادم / قائمة التقييم ==========\n 1) قائمة / تقييم خوادم UDP\n 2) قائمة / تقييم خوادم TCP\n 3) تصدير تقييمات الخوادم\n 4) استيراد تقييمات الخوادم\n 5) إعادة ضبط التقييمات\n 6) تحديث معلومات الخوادم\n 7) إعداد مهلة اتصال VPN\n 0) رجوع (Enter للرجوع أيضًا)\n------------------------------------------------"
+    ["msg_show_rating_menu_prompt"]="اختيار [0]: "
+    ["msg_show_rating_menu_invalid"]="اختيار غير صالح."
+
+# configure_vpn_timeout
+    ["msg_configure_vpn_timeout_title"]="--- إعداد مهلة اتصال VPN ---"
+    ["msg_configure_vpn_timeout_curr_val"]=" القيمة الحالية: %s ثانية"
+    ["msg_configure_vpn_timeout_prompt"]="Enter new timeout in ثانية [1-120 / Enter to رجوع]: "
+    ["msg_configure_vpn_timeout_success"]="✓ VPN timeout set to %s ثانية."
+
+# permission_setup
+    ["msg_permission_setup_title"]="=== الإعداد الأولي (الصلاحيات والمصادقة) ==="
+    ["msg_permission_setup_step1"]="1. Setting up الصلاحيات and directories..."
+    ["msg_permission_setup_dir_created"]="   ✓ Created data دليل: %s"
+    ["msg_permission_setup_log_created"]="   ✓ Created log دليل: %s"
+    ["msg_permission_setup_step2"]="1.5. إعداد إدارة سجلات النظام (logrotate)..."
+    ["msg_permission_setup_logrotate_success"]="   ✓ Installed logrotate إعدادات: %s"
+    ["msg_permission_setup_logrotate_fail"]="   ⚠️ فشل to install logrotate إعدادات (check sudo الصلاحيات)."
+    ["msg_permission_setup_step3"]="2. Enter FastestVPN ID/كلمة المرور credentials..."
+    ["msg_permission_setup_user_prompt"]="معرّف مستخدم FastestVPN (عنوان البريد الإلكتروني): "
+    ["msg_permission_setup_pass_prompt"]="كلمة المرور: "
+    ["msg_permission_setup_auth_success"]="   ✓ ID/كلمة المرور credentials configured and saved."
+    ["msg_permission_setup_auth_fail"]="   ⚠️ فشل to save ID/كلمة المرور credentials."
+
+# permission_cleanup
+    ["msg_permission_cleanup_title"]="=== تنظيف الخروج (التنظيف وحذف بيانات الاعتماد) ==="
+    ["msg_permission_cleanup_pid_removed"]="✓ Removed leftover PID ملف (PID: %s)"
+    ["msg_permission_cleanup_pid_unknown"]="غير معروف"
+    ["msg_permission_cleanup_logrotate_removed"]="✓ Removed logrotate إعدادات ملف: %s"
+    ["msg_permission_cleanup_auth_removed"]="✓ Removed المصادقة ملف (auth.conf)."
+    ["msg_permission_cleanup_no_cleanup"]="✓ لا ملفs required removal or cleanup."
+    ["msg_permission_cleanup_cleanup_done"]="خروج cleanup completed."
+
+# show_setup_cleanup_menu
+    ["msg_show_setup_cleanup_menu_menu"]="========== إعدادات بدء / إيقاف الاستخدام ==========\n 1) بدء استخدام FVPN (منح الصلاحيات / إعداد المصادقة) * نفّذ ذلك قبل البدء.\n 2) إيقاف استخدام FVPN (سحب الصلاحيات) * نفّذ ذلك قبل إزالة التطبيق.\n 0) رجوع (Enter للرجوع أيضًا)\n--------------------------------------------"
+    ["msg_show_setup_cleanup_menu_prompt"]="اختيار [0]: "
+    ["msg_show_setup_cleanup_menu_invalid"]="اختيار غير صالح."
+
+# show_main_menu
+    ["msg_show_main_menu_opts"]=" 1) اتصال VPN سريع (الاتصال بالخادم الهدف)\n 2) قطع اتصال VPN\n 3) الاتصال بخادم محدد\n 4) إعدادات الاتصال السريع (الوضع / البروتوكول / التصفية)\n 5) إدارة الخوادم / التقييم / التحديث\n 9) بدء / إيقاف الاستخدام (الصلاحيات / المصادقة)\n 0) خروج"
+    ["msg_show_main_menu_prompt"]="اختر [0-9]: "
+    ["msg_show_main_menu_exit"]="جارٍ الخروج من FVPN."
+    ["msg_show_main_menu_invalid"]="❌ اختيار غير صالح."
+)

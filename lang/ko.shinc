@@ -1,0 +1,141 @@
+# Korean
+
+declare -gA MSG=(
+# show_status_header
+    ["msg_show_status_header_auth_prefix"]="인증:"
+
+# connect_by_master_index_wm
+    ["msg_connect_by_master_index_wm_success"]=" ✓  ✓ VPN 연결이 성공적으로 설정되었습니다."
+    ["msg_connect_by_master_index_wm_fail"]=" ❌  ❌ VPN 연결에 실패했습니다."
+    ["msg_connect_by_master_index_wm_lockdown"]=" 🔒  🔒 Kill Switch(LOCKDOWN)가 트래픽을 보호하고 있습니다."
+
+# disconnect_vpn
+    ["msg_disconnect_vpn_executing"]="VPN 연결 해제 중..."
+    ["msg_disconnect_vpn_restored"]="✓ 직접 IP 통신을 복구했습니다."
+    ["msg_disconnect_vpn_failed"]="❌ 물리 프로세스를 중지하지 못했습니다."
+
+# exit_fvpn
+    ["msg_exit_fvpn_warn"]="⚠️ ⚠️ 현재 VPN이 연결되어 있습니다(또는 보호 잠금이 활성화되어 있습니다)."
+    ["msg_exit_fvpn_confirm"]="VPN 연결을 해제하고 종료하시겠습니까? [y/N]: "
+    ["msg_exit_fvpn_keep_lock"]="VPN 보호(Kill Switch)를 계속 유지합니다."
+
+# configure_connect_mode
+    ["msg_configure_connect_mode_opt1"]="1: 고정 (always 연결 to the 선택됨 target 서버)"
+    ["msg_configure_connect_mode_opt2"]="2: 순차 (rotate to the next 서버 on each 연결)"
+    ["msg_configure_connect_mode_opt3"]="3: 랜덤 (automatically select a matching 서버 each time)"
+    ["msg_configure_connect_mode_prompt"]="모드 선택 [1-3]: "
+
+# configure_protocol_mode
+    ["msg_configure_protocol_mode_opt1"]="1: UDP만 (fast / recommended)"
+    ["msg_configure_protocol_mode_opt2"]="2: TCP만 (stability first)"
+    ["msg_configure_protocol_mode_opt3"]="3: 혼합 (select from both UDP and TCP)"
+    ["msg_configure_protocol_mode_prompt"]="프로토콜 선택 [1-3]: "
+    ["msg_configure_protocol_mode_invalid"]="⚠️ 잘못된 선택입니다. 1~3을 입력하세요."
+
+# configure_filter_level
+    ["msg_configure_filter_level_menu"]="--- 선택 연결 필터 레벨 ---\n 4)  [4] 3  2  1  0  : 선택 평가 4 (favorites) only\n 3)  [4  3] 2  1  0  : 선택 평가 3 (usable) and above\n 2)  [4  3  2] 1  0  : 선택 평가 2 (standard / unrated) and above\n 1)  [4  3  2  1] 0  : 선택 평가 1 (barely usable) and above\n 0)  [4  3  2  1  0] : 선택 all 서버\n---------------------------------------------------"
+    ["msg_configure_filter_level_prompt"]="레벨 선택 [0-4 / Enter로 돌아가기]: "
+
+# update_servers
+    ["msg_update_servers_net_error"]="네트워크에 연결할 수 없습니다."
+    ["msg_update_servers_dl_fail"]="⚠️ 업데이트 파일 다운로드에 실패했습니다."
+    ["msg_update_servers_apply_fail"]="⚠️ 업데이트 패키지 적용에 실패했습니다."
+    ["msg_update_servers_success"]="✓ 서버 목록 업데이트가 완료되었습니다."
+
+# export_server_ratings
+    ["msg_export_server_ratings_dir_error"]="오류: 실패 to create the destination 디렉터리 (%s)."
+    ["msg_export_server_ratings_no_data"]="오류: No 서버 data is available to export."
+    ["msg_export_server_ratings_success"]="✓ Exported %s 서버 평가 records."
+    ["msg_export_server_ratings_out_path"]="  출력: %s"
+    ["msg_export_server_ratings_no_target"]="오류: No data was available for export."
+
+# import_server_ratings
+    ["msg_import_server_ratings_no_file"]="오류: No 파일 to import was found."
+    ["msg_import_server_ratings_check_path"]="  확인 경로: %s"
+    ["msg_import_server_ratings_executing"]="Importing 서버 평가 data..."
+    ["msg_import_server_ratings_no_valid_data"]="경고: No valid 평가 data was found in the import 파일."
+    ["msg_import_server_ratings_success"]="✓ Imported %s 서버 평가 records."
+    ["msg_import_server_ratings_no_change"]="정보: No changes were made to the 평가 data."
+
+# quick_connect
+    ["msg_quick_connect_no_active_servers"]="❌ No 연결able 서버 passed the 현재 필터."
+
+# show_quick_connect_settings
+    ["msg_show_quick_connect_settings_menu"]="========== 빠른 연결 설정 ==========\n 1) 연결 모드 : %s\n 2) 프로토콜   : %s\n 3) 필터 레벨 : %s\n 0) 돌아가기 (Enter로도 돌아갑니다)\n----------------------------------"
+    ["msg_show_quick_connect_settings_prompt"]="선택 [0]: "
+    ["msg_show_quick_connect_settings_invalid"]="잘못된 선택입니다."
+    ["msg_show_quick_connect_settings_mode_fixed"]="[1:고정] 2:순차  3:랜덤"
+    ["msg_show_quick_connect_settings_mode_seq"]=" 1:고정 [2:순차] 3:랜덤"
+    ["msg_show_quick_connect_settings_mode_random"]=" 1:고정  2:순차 [3:랜덤]"
+
+# reset_ratings_menu
+    ["msg_reset_ratings_menu_confirm"]="Initialize all 서버 평가 to the default (2)? (y/N): "
+    ["msg_reset_ratings_menu_success"]="✓ Operation completed. (필터 레벨 reset to 0)"
+    ["msg_reset_ratings_menu_canceled"]="취소했습니다."
+
+# manage_protocol_servers
+    ["msg_manage_protocol_servers_no_servers"]="(No matching %s 서버)"
+    ["msg_manage_protocol_servers_list_header"]="========== %s 서버 List / Rating Settings =========="
+    ["msg_manage_protocol_servers_legend"]=" 평가 범례: 4:즐겨찾기, 2:미평가, 1:간신히 사용 가능, 3:사용 가능, 0:제외"
+    ["msg_manage_protocol_servers_select_prompt"]="선택 the 서버 number to change the 평가 [Enter or 0 to 돌아가기]: "
+    ["msg_manage_protocol_servers_out_of_range"]="⚠️ Enter a 값 from 1 to %s."
+    ["msg_manage_protocol_servers_val_prompt"]="Enter the new 평가 [0-4]: "
+    ["msg_manage_protocol_servers_invalid_val"]="⚠️ Enter a 값 from 0 to 4."
+
+# select_vpn_server
+    ["msg_select_vpn_server_title"]="========== Connect to Specific 서버 =========="
+    ["msg_select_vpn_server_opts"]=" 1) UDP\n 2) TCP\n 0) 돌아가기 (Enter also 돌아가기s)"
+    ["msg_select_vpn_server_proto_prompt"]="선택 [0-2]: "
+    ["msg_select_vpn_server_canceled"]="취소했습니다."
+    ["msg_select_vpn_server_invalid_proto"]="⚠️ 잘못된 선택입니다. Enter a value from 0 to 2."
+    ["msg_select_vpn_server_no_servers"]="⚠️ There are 0 필터-passed 서버 for the 선택됨 프로토콜 (%s)."
+    ["msg_select_vpn_server_list_header"]="--- Available 서버s (%s : %s) ---"
+    ["msg_select_vpn_server_num_prompt"]="Enter the 서버 number to 연결 (0:돌아가기): "
+    ["msg_select_vpn_server_invalid_num"]="⚠️ 잘못됨 input. Enter a number."
+    ["msg_select_vpn_server_not_found"]="⚠️ 서버 number [ %s ] does not exist in the %s 필터-passed list."
+
+# show_rating_menu
+    ["msg_show_rating_menu_menu"]="========== 서버 관리 / 평가 메뉴 ==========\n 1) UDP 서버 목록 / 평가\n 2) TCP 서버 목록 / 평가\n 3) 서버 평가 내보내기\n 4) 서버 평가 가져오기\n 5) 평가 초기화\n 6) 서버 정보 업데이트\n 7) VPN 연결 타임아웃 설정\n 0) 돌아가기 (Enter로도 돌아갑니다)\n------------------------------------------------"
+    ["msg_show_rating_menu_prompt"]="선택 [0]: "
+    ["msg_show_rating_menu_invalid"]="잘못된 선택입니다."
+
+# configure_vpn_timeout
+    ["msg_configure_vpn_timeout_title"]="--- VPN 연결 타임아웃 설정 ---"
+    ["msg_configure_vpn_timeout_curr_val"]=" 현재 값: %s초"
+    ["msg_configure_vpn_timeout_prompt"]="Enter new timeout in 초 [1-120 / Enter to 돌아가기]: "
+    ["msg_configure_vpn_timeout_success"]="✓ VPN timeout set to %s 초."
+
+# permission_setup
+    ["msg_permission_setup_title"]="=== 초기 설정 (권한 및 인증) ==="
+    ["msg_permission_setup_step1"]="1. Setting up 권한 and directories..."
+    ["msg_permission_setup_dir_created"]="   ✓ Created data 디렉터리: %s"
+    ["msg_permission_setup_log_created"]="   ✓ Created log 디렉터리: %s"
+    ["msg_permission_setup_step2"]="1.5. OS 로그 관리(logrotate) 설정 중..."
+    ["msg_permission_setup_logrotate_success"]="   ✓ Installed logrotate 설정: %s"
+    ["msg_permission_setup_logrotate_fail"]="   ⚠️ 실패 to install logrotate 설정 (check sudo 권한)."
+    ["msg_permission_setup_step3"]="2. Enter FastestVPN ID/비밀번호 credentials..."
+    ["msg_permission_setup_user_prompt"]="FastestVPN 사용자 ID(이메일 주소): "
+    ["msg_permission_setup_pass_prompt"]="비밀번호: "
+    ["msg_permission_setup_auth_success"]="   ✓ ID/비밀번호 credentials configured and saved."
+    ["msg_permission_setup_auth_fail"]="   ⚠️ 실패 to save ID/비밀번호 credentials."
+
+# permission_cleanup
+    ["msg_permission_cleanup_title"]="=== 종료 정리 (정리 및 인증 정보 삭제) ==="
+    ["msg_permission_cleanup_pid_removed"]="✓ Removed leftover PID 파일 (PID: %s)"
+    ["msg_permission_cleanup_pid_unknown"]="알 수 없음"
+    ["msg_permission_cleanup_logrotate_removed"]="✓ Removed logrotate 설정 파일: %s"
+    ["msg_permission_cleanup_auth_removed"]="✓ Removed 인증 파일 (auth.conf)."
+    ["msg_permission_cleanup_no_cleanup"]="✓ No 파일s required removal or cleanup."
+    ["msg_permission_cleanup_cleanup_done"]="종료 cleanup completed."
+
+# show_setup_cleanup_menu
+    ["msg_show_setup_cleanup_menu_menu"]="========== 사용 시작 / 중지 설정 ==========\n 1) 사용 시작 (권한 부여 / 인증 설정) * 사용 전에 실행하세요.\n 2) 사용 중지 (권한 취소) * 앱 삭제 전에 실행하세요.\n 0) 돌아가기 (Enter로도 돌아갑니다)\n--------------------------------------------"
+    ["msg_show_setup_cleanup_menu_prompt"]="선택 [0]: "
+    ["msg_show_setup_cleanup_menu_invalid"]="잘못된 선택입니다."
+
+# show_main_menu
+    ["msg_show_main_menu_opts"]=" 1) 빠른 VPN 연결 (대상 서버에 연결)\n 2) VPN 연결 해제\n 3) 특정 서버 연결\n 4) 빠른 연결 설정 (모드 / 프로토콜 / 필터)\n 5) 서버 관리 / 평가 / 업데이트\n 9) 사용 시작 / 중지 (권한 / 인증)\n 0) 종료"
+    ["msg_show_main_menu_prompt"]="선택 [0-9]: "
+    ["msg_show_main_menu_exit"]="FVPN을 종료합니다."
+    ["msg_show_main_menu_invalid"]="❌ 잘못된 선택입니다."
+)

@@ -1,0 +1,141 @@
+# Russian
+
+declare -gA MSG=(
+# show_status_header
+    ["msg_show_status_header_auth_prefix"]="Аутентификация:"
+
+# connect_by_master_index_wm
+    ["msg_connect_by_master_index_wm_success"]=" ✓  ✓ VPN-соединение успешно установлено."
+    ["msg_connect_by_master_index_wm_fail"]=" ❌  ❌ Не удалось установить VPN-соединение."
+    ["msg_connect_by_master_index_wm_lockdown"]=" 🔒  🔒 Трафик защищён Kill Switch (LOCKDOWN)."
+
+# disconnect_vpn
+    ["msg_disconnect_vpn_executing"]="Отключение VPN..."
+    ["msg_disconnect_vpn_restored"]="✓ Прямой IP-трафик восстановлен."
+    ["msg_disconnect_vpn_failed"]="❌ Не удалось остановить физические процессы."
+
+# exit_fvpn
+    ["msg_exit_fvpn_warn"]="⚠️ ⚠️ VPN сейчас подключён (или активна блокировка защиты)."
+    ["msg_exit_fvpn_confirm"]="Отключить VPN и выйти? [y/N]: "
+    ["msg_exit_fvpn_keep_lock"]="Защита VPN (Kill Switch) останется активной."
+
+# configure_connect_mode
+    ["msg_configure_connect_mode_opt1"]="1: Фиксированный (always подключить to the выбранный target сервер)"
+    ["msg_configure_connect_mode_opt2"]="2: Последовательный (rotate to the next сервер on each соединение)"
+    ["msg_configure_connect_mode_opt3"]="3: Случайный (automatically select a matching сервер each time)"
+    ["msg_configure_connect_mode_prompt"]="Выберите режим [1-3]: "
+
+# configure_protocol_mode
+    ["msg_configure_protocol_mode_opt1"]="1: Только UDP (fast / recommended)"
+    ["msg_configure_protocol_mode_opt2"]="2: Только TCP (stability first)"
+    ["msg_configure_protocol_mode_opt3"]="3: Смешанный (select from both UDP and TCP)"
+    ["msg_configure_protocol_mode_prompt"]="Выберите протокол [1-3]: "
+    ["msg_configure_protocol_mode_invalid"]="⚠️ Неверный выбор. Введите число от 1 до 3."
+
+# configure_filter_level
+    ["msg_configure_filter_level_menu"]="--- Выберите соединение фильтр уровень ---\n 4)  [4] 3  2  1  0  : Выберите оценка 4 (favorites) only\n 3)  [4  3] 2  1  0  : Выберите оценка 3 (usable) and above\n 2)  [4  3  2] 1  0  : Выберите оценка 2 (standard / unrated) and above\n 1)  [4  3  2  1] 0  : Выберите оценка 1 (barely usable) and above\n 0)  [4  3  2  1  0] : Выберите all серверов\n---------------------------------------------------"
+    ["msg_configure_filter_level_prompt"]="Выберите уровень [0-4 / Enter для возврата]: "
+
+# update_servers
+    ["msg_update_servers_net_error"]="Не удалось подключиться к сети."
+    ["msg_update_servers_dl_fail"]="⚠️ Не удалось загрузить файл обновления."
+    ["msg_update_servers_apply_fail"]="⚠️ Не удалось применить пакет обновления."
+    ["msg_update_servers_success"]="✓ Обновление списка серверов завершено успешно."
+
+# export_server_ratings
+    ["msg_export_server_ratings_dir_error"]="Ошибка: Не удалось to create the destination каталог (%s)."
+    ["msg_export_server_ratings_no_data"]="Ошибка: Нет сервер data is available to export."
+    ["msg_export_server_ratings_success"]="✓ Exported %s сервер оценка records."
+    ["msg_export_server_ratings_out_path"]="  Вывод: %s"
+    ["msg_export_server_ratings_no_target"]="Ошибка: Нет data was available for export."
+
+# import_server_ratings
+    ["msg_import_server_ratings_no_file"]="Ошибка: Нет файл to import was found."
+    ["msg_import_server_ratings_check_path"]="  Проверочный путь: %s"
+    ["msg_import_server_ratings_executing"]="Importing сервер оценка data..."
+    ["msg_import_server_ratings_no_valid_data"]="Предупреждение: Нет valid оценка data was found in the import файл."
+    ["msg_import_server_ratings_success"]="✓ Imported %s сервер оценка records."
+    ["msg_import_server_ratings_no_change"]="Информация: Нет changes were made to the оценка data."
+
+# quick_connect
+    ["msg_quick_connect_no_active_servers"]="❌ Нет подключитьable серверов passed the текущий фильтр."
+
+# show_quick_connect_settings
+    ["msg_show_quick_connect_settings_menu"]="========== Настройки быстрого подключения ==========\n 1) Режим подключения : %s\n 2) Протокол           : %s\n 3) Уровень фильтра    : %s\n 0) Назад (Enter также возвращает)\n----------------------------------"
+    ["msg_show_quick_connect_settings_prompt"]="Выберите [0]: "
+    ["msg_show_quick_connect_settings_invalid"]="Неверный выбор."
+    ["msg_show_quick_connect_settings_mode_fixed"]="[1:Фиксированный] 2:Последовательный  3:Случайный"
+    ["msg_show_quick_connect_settings_mode_seq"]=" 1:Фиксированный [2:Последовательный] 3:Случайный"
+    ["msg_show_quick_connect_settings_mode_random"]=" 1:Фиксированный  2:Последовательный [3:Случайный]"
+
+# reset_ratings_menu
+    ["msg_reset_ratings_menu_confirm"]="Initialize all сервер оценки to the default (2)? (y/N): "
+    ["msg_reset_ratings_menu_success"]="✓ Operation completed. (Фильтр уровень reset to 0)"
+    ["msg_reset_ratings_menu_canceled"]="Отменено."
+
+# manage_protocol_servers
+    ["msg_manage_protocol_servers_no_servers"]="(Нет matching %s серверов)"
+    ["msg_manage_protocol_servers_list_header"]="========== %s Сервер List / Rating Settings =========="
+    ["msg_manage_protocol_servers_legend"]=" Легенда оценок: 4:Избранное, 2:Не оценён, 1:Едва пригоден, 3:Пригоден, 0:Исключён"
+    ["msg_manage_protocol_servers_select_prompt"]="Выберите the сервер number to change the оценка [Enter or 0 to вернуться]: "
+    ["msg_manage_protocol_servers_out_of_range"]="⚠️ Enter a значение from 1 to %s."
+    ["msg_manage_protocol_servers_val_prompt"]="Enter the new оценка [0-4]: "
+    ["msg_manage_protocol_servers_invalid_val"]="⚠️ Enter a значение from 0 to 4."
+
+# select_vpn_server
+    ["msg_select_vpn_server_title"]="========== Connect to Specific Сервер =========="
+    ["msg_select_vpn_server_opts"]=" 1) UDP\n 2) TCP\n 0) Назад (Enter also вернутьсяs)"
+    ["msg_select_vpn_server_proto_prompt"]="Выберите [0-2]: "
+    ["msg_select_vpn_server_canceled"]="Отменено."
+    ["msg_select_vpn_server_invalid_proto"]="⚠️ Неверный выбор. Enter a value from 0 to 2."
+    ["msg_select_vpn_server_no_servers"]="⚠️ There are 0 фильтр-passed серверов for the выбранный протокол (%s)."
+    ["msg_select_vpn_server_list_header"]="--- Available Серверs (%s : %s) ---"
+    ["msg_select_vpn_server_num_prompt"]="Enter the сервер number to подключить (0:Назад): "
+    ["msg_select_vpn_server_invalid_num"]="⚠️ Неверный input. Enter a number."
+    ["msg_select_vpn_server_not_found"]="⚠️ Сервер number [ %s ] does not exist in the %s фильтр-passed list."
+
+# show_rating_menu
+    ["msg_show_rating_menu_menu"]="========== Управление серверами / Оценки ==========\n 1) Список / оценка UDP-серверов\n 2) Список / оценка TCP-серверов\n 3) Экспорт оценок серверов\n 4) Импорт оценок серверов\n 5) Сброс оценок\n 6) Обновление информации о серверах\n 7) Настройка тайм-аута VPN\n 0) Назад (Enter также возвращает)\n------------------------------------------------"
+    ["msg_show_rating_menu_prompt"]="Выберите [0]: "
+    ["msg_show_rating_menu_invalid"]="Неверный выбор."
+
+# configure_vpn_timeout
+    ["msg_configure_vpn_timeout_title"]="--- Настройка тайм-аута VPN-подключения ---"
+    ["msg_configure_vpn_timeout_curr_val"]=" Текущее значение: %s сек."
+    ["msg_configure_vpn_timeout_prompt"]="Enter new timeout in сек. [1-120 / Enter to вернуться]: "
+    ["msg_configure_vpn_timeout_success"]="✓ VPN timeout set to %s сек.."
+
+# permission_setup
+    ["msg_permission_setup_title"]="=== Первичная настройка (права и аутентификация) ==="
+    ["msg_permission_setup_step1"]="1. Setting up права and directories..."
+    ["msg_permission_setup_dir_created"]="   ✓ Created data каталог: %s"
+    ["msg_permission_setup_log_created"]="   ✓ Created log каталог: %s"
+    ["msg_permission_setup_step2"]="1.5. Настройка системного управления журналами (logrotate)..."
+    ["msg_permission_setup_logrotate_success"]="   ✓ Installed logrotate настройка: %s"
+    ["msg_permission_setup_logrotate_fail"]="   ⚠️ Не удалось to install logrotate настройка (check sudo права)."
+    ["msg_permission_setup_step3"]="2. Enter FastestVPN ID/пароль credentials..."
+    ["msg_permission_setup_user_prompt"]="ID пользователя FastestVPN (адрес электронной почты): "
+    ["msg_permission_setup_pass_prompt"]="Пароль: "
+    ["msg_permission_setup_auth_success"]="   ✓ ID/пароль credentials configured and saved."
+    ["msg_permission_setup_auth_fail"]="   ⚠️ Не удалось to save ID/пароль credentials."
+
+# permission_cleanup
+    ["msg_permission_cleanup_title"]="=== Очистка при выходе (очистка и удаление учётных данных) ==="
+    ["msg_permission_cleanup_pid_removed"]="✓ Removed leftover PID файл (PID: %s)"
+    ["msg_permission_cleanup_pid_unknown"]="Неизвестно"
+    ["msg_permission_cleanup_logrotate_removed"]="✓ Removed logrotate настройка файл: %s"
+    ["msg_permission_cleanup_auth_removed"]="✓ Removed аутентификация файл (auth.conf)."
+    ["msg_permission_cleanup_no_cleanup"]="✓ Нет файлs required removal or cleanup."
+    ["msg_permission_cleanup_cleanup_done"]="Выход cleanup completed."
+
+# show_setup_cleanup_menu
+    ["msg_show_setup_cleanup_menu_menu"]="========== Настройки запуска / остановки ==========\n 1) Запуск использования FVPN (права / аутентификация) * Выполните перед использованием.\n 2) Остановка использования FVPN (отмена прав) * Выполните перед удалением приложения.\n 0) Назад (Enter также возвращает)\n--------------------------------------------"
+    ["msg_show_setup_cleanup_menu_prompt"]="Выберите [0]: "
+    ["msg_show_setup_cleanup_menu_invalid"]="Неверный выбор."
+
+# show_main_menu
+    ["msg_show_main_menu_opts"]=" 1) Быстрое VPN-подключение (подключение к целевому серверу)\n 2) Отключить VPN\n 3) Подключиться к указанному серверу\n 4) Настройки быстрого подключения (режим / протокол / фильтр)\n 5) Управление / оценки / обновление серверов\n 9) Запуск / остановка использования (права / аутентификация)\n 0) Выход"
+    ["msg_show_main_menu_prompt"]="Выберите [0-9]: "
+    ["msg_show_main_menu_exit"]="Выход из FVPN."
+    ["msg_show_main_menu_invalid"]="❌ Неверный выбор."
+)
