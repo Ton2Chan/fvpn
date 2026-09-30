@@ -777,15 +777,28 @@ show_rating_menu() {
 
 configure_vpn_timeout() {
     local t_val
+
     echo
     echo "${MSG["msg_configure_vpn_timeout_title"]}"
     printf '%s\n' "$(printf "${MSG["msg_configure_vpn_timeout_curr_val"]}" "$TIMEOUT_VPN_CONNECT")"
-    read -rp "${MSG["msg_configure_vpn_timeout_prompt"]}" t_val
-    if [[ "$t_val" =~ ^[0-9]+$ ]] && [ "$t_val" -ge 1 ] && [ "$t_val" -le 120 ]; then
-        TIMEOUT_VPN_CONNECT="$t_val"
-        save_all_settings
-        printf '%s\n' "$(printf "${MSG["msg_configure_vpn_timeout_success"]}" "$TIMEOUT_VPN_CONNECT")"
-    fi
+
+    while true; do
+        read -rp "${MSG["msg_configure_vpn_timeout_prompt"]}" t_val
+
+        if [ -z "$t_val" ]; then
+            break
+        fi
+
+        if [[ "$t_val" =~ ^[0-9]+$ ]] && [ "$t_val" -ge 1 ] && [ "$t_val" -le 120 ]; then
+            TIMEOUT_VPN_CONNECT="$t_val"
+            if save_all_settings; then
+                printf '%s\n' "$(printf "${MSG["msg_configure_vpn_timeout_success"]}" "$TIMEOUT_VPN_CONNECT")"
+            fi
+            break
+        fi
+
+        echo "${MSG["msg_common_invalid_input"]}" >&2
+    done
 }
 
 #

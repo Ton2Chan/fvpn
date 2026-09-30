@@ -33,7 +33,11 @@ phy_connect() {
 
     # Ensure clean state by resetting existing OpenVPN processes and TUN interfaces
     # 既存のOpenVPNとTUNを確実に整理
-    _phy_openvpn_kill
+
+    if ! _phy_openvpn_kill; then
+        echo "LOCKDOWN" > "$state_file" 2>/dev/null
+        return 1
+    fi
     _phy_tun_clear
 
     # Apply kill switch before connection launch / 起動前のキルスイッチ適用

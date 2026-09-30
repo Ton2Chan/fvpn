@@ -2,6 +2,9 @@
 
 declare -A MSG=(
 
+# === Common Messages ===
+["msg_common_invalid_input"]="유효하지 않은 입력입니다."
+
 # show_status_header
 ["msg_show_status_header_auth_prefix"]="인증:"
 

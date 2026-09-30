@@ -2,6 +2,9 @@
 
 declare -A MSG=(
 
+# === Common Messages ===
+["msg_common_invalid_input"]="Entrada inválida."
+
 # show_status_header
 ["msg_show_status_header_auth_prefix"]="Autenticação:"
 
