@@ -134,7 +134,7 @@ declare -gA MSG=(
     ["msg_show_setup_cleanup_menu_invalid"]="無効な選択です。"
 
 # show_main_menu
-    ["msg_show_main_menu_opts"]=" 1) 簡易VPN接続 (注目サーバーへ接続)\n 2) VPN切断\n 3) サーバー個別指定接続\n 4) 簡易接続設定 (モード・プロトコル・フィルタ)\n 5) サーバー管理・評価・更新\n 9) 使用開始・使用停止 (権限認証)\n 0) 終了"\n    ["msg_show_main_menu_prompt"]="選択してください [0-9]: "
+    ["msg_show_main_menu_opts"]=" 1) 簡易VPN接続 (注目サーバーへ接続)\n 2) VPN切断\n 3) サーバー個別指定接続\n 4) 簡易接続設定 (モード・プロトコル・フィルタ)\n 5) サーバー管理・評価・更新\n 9) 使用開始・使用停止 (権限認証)\n 0) 終了"
     ["msg_show_main_menu_prompt"]="選択してください [0-9]: "
     ["msg_show_main_menu_exit"]="FVPN を終了します。"
     ["msg_show_main_menu_invalid"]="❌ 無効な選択肢です。"
