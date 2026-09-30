@@ -1,141 +1,140 @@
 # Indonesian
 
-declare -gA MSG=(
+declare -A MSG=(
+
 # show_status_header
-    ["msg_show_status_header_auth_prefix"]="Autentikasi:"
+["msg_show_status_header_auth_prefix"]="Autentikasi:"
 
 # connect_by_master_index_wm
-    ["msg_connect_by_master_index_wm_success"]=" ✓  ✓ Koneksi VPN berhasil dibuat."
-    ["msg_connect_by_master_index_wm_fail"]=" ❌  ❌ Koneksi VPN gagal."
-    ["msg_connect_by_master_index_wm_lockdown"]=" 🔒  🔒 Lalu lintas dilindungi oleh Kill Switch (LOCKDOWN)."
+["msg_connect_by_master_index_wm_success"]=" ✓  ✓ Koneksi VPN berhasil dibuat."
+["msg_connect_by_master_index_wm_fail"]=" ❌  ❌ Koneksi VPN gagal."
+["msg_connect_by_master_index_wm_lockdown"]=" 🔒  🔒 Lalu lintas dilindungi oleh Kill Switch (LOCKDOWN)."
 
 # disconnect_vpn
-    ["msg_disconnect_vpn_executing"]="Memutuskan koneksi VPN..."
-    ["msg_disconnect_vpn_restored"]="✓ Lalu lintas IP langsung dipulihkan."
-    ["msg_disconnect_vpn_failed"]="❌ Gagal menghentikan proses fisik."
+["msg_disconnect_vpn_executing"]="Memutuskan koneksi VPN..."
+["msg_disconnect_vpn_restored"]="✓ Lalu lintas IP langsung dipulihkan."
+["msg_disconnect_vpn_failed"]="❌ Gagal menghentikan proses fisik."
 
 # exit_fvpn
-    ["msg_exit_fvpn_warn"]="⚠️ ⚠️ VPN saat ini terhubung (atau kunci perlindungan aktif)."
-    ["msg_exit_fvpn_confirm"]="Putuskan VPN dan keluar? [y/N]: "
-    ["msg_exit_fvpn_keep_lock"]="Perlindungan VPN (Kill Switch) akan tetap aktif."
+["msg_exit_fvpn_warn"]="⚠️ ⚠️ VPN saat ini terhubung (atau kunci perlindungan aktif)."
+["msg_exit_fvpn_confirm"]="Putuskan VPN dan keluar? [y/N]: "
+["msg_exit_fvpn_keep_lock"]="Perlindungan VPN (Kill Switch) akan tetap aktif."
 
 # configure_connect_mode
-    ["msg_configure_connect_mode_opt1"]="1: Tetap (always hubungkan to the yang dipilih target server)"
-    ["msg_configure_connect_mode_opt2"]="2: Berurutan (rotate to the next server on each koneksi)"
-    ["msg_configure_connect_mode_opt3"]="3: Acak (automatically select a matching server each time)"
-    ["msg_configure_connect_mode_prompt"]="Pilih mode [1-3]: "
+["msg_configure_connect_mode_opt1"]="1: Tetap (always hubungkan to the yang dipilih target server)"
+["msg_configure_connect_mode_opt2"]="2: Berurutan (rotate to the next server on each koneksi)"
+["msg_configure_connect_mode_opt3"]="3: Acak (automatically select a matching server each time)"
+["msg_configure_connect_mode_prompt"]="Pilih mode [1-3]: "
 
 # configure_protocol_mode
-    ["msg_configure_protocol_mode_opt1"]="1: Hanya UDP (fast / recommended)"
-    ["msg_configure_protocol_mode_opt2"]="2: Hanya TCP (stability first)"
-    ["msg_configure_protocol_mode_opt3"]="3: Campuran (select from both UDP and TCP)"
-    ["msg_configure_protocol_mode_prompt"]="Pilih protokol [1-3]: "
-    ["msg_configure_protocol_mode_invalid"]="⚠️ Pilihan tidak valid. Masukkan nilai 1 hingga 3."
+["msg_configure_protocol_mode_opt1"]="1: Hanya UDP (fast / recommended)"
+["msg_configure_protocol_mode_opt2"]="2: Hanya TCP (stability first)"
+["msg_configure_protocol_mode_opt3"]="3: Campuran (select from both UDP and TCP)"
+["msg_configure_protocol_mode_prompt"]="Pilih protokol [1-3]: "
 
 # configure_filter_level
-    ["msg_configure_filter_level_menu"]="--- Pilih koneksi filter level ---\n 4)  [4] 3  2  1  0  : Pilih penilaian 4 (favorites) only\n 3)  [4  3] 2  1  0  : Pilih penilaian 3 (usable) and above\n 2)  [4  3  2] 1  0  : Pilih penilaian 2 (standard / unrated) and above\n 1)  [4  3  2  1] 0  : Pilih penilaian 1 (barely usable) and above\n 0)  [4  3  2  1  0] : Pilih all server\n---------------------------------------------------"
-    ["msg_configure_filter_level_prompt"]="Pilih level [0-4 / Enter untuk kembali]: "
+["msg_configure_filter_level_menu"]="--- Pilih koneksi filter level ---\n 4)  [4] 3  2  1  0  : Pilih penilaian 4 (favorites) only\n 3)  [4  3] 2  1  0  : Pilih penilaian 3 (usable) and above\n 2)  [4  3  2] 1  0  : Pilih penilaian 2 (standard / unrated) and above\n 1)  [4  3  2  1] 0  : Pilih penilaian 1 (barely usable) and above\n 0)  [4  3  2  1  0] : Pilih all server\n---------------------------------------------------"
+["msg_configure_filter_level_prompt"]="Pilih level [0-4 / Enter untuk kembali]: "
 
 # update_servers
-    ["msg_update_servers_net_error"]="Tidak dapat terhubung ke jaringan."
-    ["msg_update_servers_dl_fail"]="⚠️ Gagal mengunduh file pembaruan."
-    ["msg_update_servers_apply_fail"]="⚠️ Gagal menerapkan paket pembaruan."
-    ["msg_update_servers_success"]="✓ Pembaruan daftar server berhasil diselesaikan."
+["msg_update_servers_net_error"]="Tidak dapat terhubung ke jaringan."
+["msg_update_servers_dl_fail"]="⚠️ Gagal mengunduh file pembaruan."
+["msg_update_servers_apply_fail"]="⚠️ Gagal menerapkan paket pembaruan."
+["msg_update_servers_success"]="✓ Pembaruan daftar server berhasil diselesaikan."
 
 # export_server_ratings
-    ["msg_export_server_ratings_dir_error"]="Kesalahan: Gagal to create the destination direktori (%s)."
-    ["msg_export_server_ratings_no_data"]="Kesalahan: Tidak ada server data is available to export."
-    ["msg_export_server_ratings_success"]="✓ Exported %s server penilaian records."
-    ["msg_export_server_ratings_out_path"]="  Output: %s"
-    ["msg_export_server_ratings_no_target"]="Kesalahan: Tidak ada data was available for export."
+["msg_export_server_ratings_dir_error"]="Kesalahan: Gagal to create the destination direktori (%s)."
+["msg_export_server_ratings_no_data"]="Kesalahan: Tidak ada server data is available to export."
+["msg_export_server_ratings_success"]="✓ Exported %s server penilaian records."
+["msg_export_server_ratings_out_path"]="  Output: %s"
+["msg_export_server_ratings_no_target"]="Kesalahan: Tidak ada data was available for export."
 
 # import_server_ratings
-    ["msg_import_server_ratings_no_file"]="Kesalahan: Tidak ada file to import was found."
-    ["msg_import_server_ratings_check_path"]="  Jalur pemeriksaan: %s"
-    ["msg_import_server_ratings_executing"]="Importing server penilaian data..."
-    ["msg_import_server_ratings_no_valid_data"]="Peringatan: Tidak ada valid penilaian data was found in the import file."
-    ["msg_import_server_ratings_success"]="✓ Imported %s server penilaian records."
-    ["msg_import_server_ratings_no_change"]="Info: Tidak ada changes were made to the penilaian data."
+["msg_import_server_ratings_no_file"]="Kesalahan: Tidak ada file to import was found."
+["msg_import_server_ratings_check_path"]="  Jalur pemeriksaan: %s"
+["msg_import_server_ratings_executing"]="Importing server penilaian data..."
+["msg_import_server_ratings_no_valid_data"]="Peringatan: Tidak ada valid penilaian data was found in the import file."
+["msg_import_server_ratings_success"]="✓ Imported %s server penilaian records."
+["msg_import_server_ratings_no_change"]="Info: Tidak ada changes were made to the penilaian data."
 
 # quick_connect
-    ["msg_quick_connect_no_active_servers"]="❌ Tidak ada hubungkanable server passed the saat ini filter."
+["msg_quick_connect_no_active_servers"]="❌ Tidak ada hubungkanable server passed the saat ini filter."
 
 # show_quick_connect_settings
-    ["msg_show_quick_connect_settings_menu"]="========== Pengaturan Koneksi Cepat ==========\n 1) Mode koneksi : %s\n 2) Protokol     : %s\n 3) Level filter : %s\n 0) Kembali (Enter juga untuk kembali)\n----------------------------------"
-    ["msg_show_quick_connect_settings_prompt"]="Pilih [0]: "
-    ["msg_show_quick_connect_settings_invalid"]="Pilihan tidak valid."
-    ["msg_show_quick_connect_settings_mode_fixed"]="[1:Tetap] 2:Berurutan  3:Acak"
-    ["msg_show_quick_connect_settings_mode_seq"]=" 1:Tetap [2:Berurutan] 3:Acak"
-    ["msg_show_quick_connect_settings_mode_random"]=" 1:Tetap  2:Berurutan [3:Acak]"
+["msg_show_quick_connect_settings_mode_fixed"]="[1:Tetap] 2:Berurutan  3:Acak"
+["msg_show_quick_connect_settings_mode_seq"]=" 1:Tetap [2:Berurutan] 3:Acak"
+["msg_show_quick_connect_settings_mode_random"]=" 1:Tetap  2:Berurutan [3:Acak]"
+["msg_show_quick_connect_settings_menu"]="========== Pengaturan Koneksi Cepat ==========\n 1) Mode koneksi : %s\n 2) Protokol : %s\n 3) Level filter : %s\n 0) Kembali (Enter juga untuk kembali)\n----------------------------------"
+["msg_show_quick_connect_settings_prompt"]="Pilih [0]: "
+["msg_show_quick_connect_settings_invalid"]="Pilihan tidak valid."
 
 # reset_ratings_menu
-    ["msg_reset_ratings_menu_confirm"]="Initialize all server penilaian to the default (2)? (y/N): "
-    ["msg_reset_ratings_menu_success"]="✓ Operasi selesai. (Level filter diatur ulang ke 0)"
-    ["msg_reset_ratings_menu_canceled"]="Dibatalkan."
+["msg_reset_ratings_menu_confirm"]="Initialize all server penilaian to the default (2)? (y/N): "
+["msg_reset_ratings_menu_success"]="✓ Operasi selesai. (Level filter diatur ulang ke 0)"
+["msg_reset_ratings_menu_canceled"]="Dibatalkan."
 
 # manage_protocol_servers
-    ["msg_manage_protocol_servers_no_servers"]="(Tidak ada matching %s server)"
-    ["msg_manage_protocol_servers_list_header"]="========== Daftar Server %s / Pengaturan Penilaian =========="
-    ["msg_manage_protocol_servers_legend"]=" Legenda penilaian: 4:Favorit, 2:Belum dinilai, 1:Hampir dapat digunakan, 3:Dapat digunakan, 0:Dikecualikan"
-    ["msg_manage_protocol_servers_select_prompt"]="Pilih the server number to change the penilaian [Enter or 0 to kembali]: "
-    ["msg_manage_protocol_servers_out_of_range"]="⚠️ Enter a nilai from 1 to %s."
-    ["msg_manage_protocol_servers_val_prompt"]="Enter the new penilaian [0-4]: "
-    ["msg_manage_protocol_servers_invalid_val"]="⚠️ Enter a nilai from 0 to 4."
+["msg_manage_protocol_servers_no_servers"]="(Tidak ada matching %s server)"
+["msg_manage_protocol_servers_list_header"]="========== Daftar Server %s / Pengaturan Penilaian =========="
+["msg_manage_protocol_servers_legend"]=" Legenda penilaian: 4:Favorit, 2:Belum dinilai, 1:Hampir dapat digunakan, 3:Dapat digunakan, 0:Dikecualikan"
+["msg_manage_protocol_servers_select_prompt"]="Pilih the server number to change the penilaian [Enter or 0 to kembali]: "
+["msg_manage_protocol_servers_out_of_range"]="⚠️ Enter a nilai from 1 to %s."
+["msg_manage_protocol_servers_val_prompt"]="Enter the new penilaian [0-4]: "
+["msg_manage_protocol_servers_invalid_val"]="⚠️ Enter a nilai from 0 to 4."
 
 # select_vpn_server
-    ["msg_select_vpn_server_title"]="========== Hubungkan ke Server Tertentu =========="
-    ["msg_select_vpn_server_opts"]=" 1) UDP\n 2) TCP\n 0) Kembali (Enter also kembalis)"
-    ["msg_select_vpn_server_proto_prompt"]="Pilih [0-2]: "
-    ["msg_select_vpn_server_canceled"]="Dibatalkan."
-    ["msg_select_vpn_server_invalid_proto"]="⚠️ Pilihan tidak valid. Enter a value from 0 to 2."
-    ["msg_select_vpn_server_no_servers"]="⚠️ There are 0 filter-passed server for the yang dipilih protokol (%s)."
-    ["msg_select_vpn_server_list_header"]="--- Server Tersedia (%s : %s) ---"
-    ["msg_select_vpn_server_num_prompt"]="Enter the server number to hubungkan (0:Kembali): "
-    ["msg_select_vpn_server_invalid_num"]="⚠️ Tidak valid input. Enter a number."
-    ["msg_select_vpn_server_not_found"]="⚠️ Nomor server [ %s ] tidak ada dalam daftar %s yang lolos filter."
+["msg_select_vpn_server_title"]="========== Hubungkan ke Server Tertentu =========="
+["msg_select_vpn_server_opts"]=" 1) UDP\n 2) TCP\n 0) Kembali (Enter also kembalis)"
+["msg_select_vpn_server_proto_prompt"]="Pilih [0-2]: "
+["msg_select_vpn_server_canceled"]="Dibatalkan."
+["msg_select_vpn_server_invalid_proto"]="⚠️ Pilihan tidak valid. Enter a value from 0 to 2."
+["msg_select_vpn_server_no_servers"]="⚠️ There are 0 filter-passed server for the yang dipilih protokol (%s)."
+["msg_select_vpn_server_list_header"]="--- Server Tersedia (%s : %s) ---"
+["msg_select_vpn_server_num_prompt"]="Enter the server number to hubungkan (0:Kembali): "
+["msg_select_vpn_server_invalid_num"]="⚠️ Tidak valid input. Enter a number."
+["msg_select_vpn_server_not_found"]="⚠️ Nomor server [ %s ] tidak ada dalam daftar %s yang lolos filter."
 
 # show_rating_menu
-    ["msg_show_rating_menu_menu"]="========== Menu Pengelolaan / Penilaian Server ==========\n 1) Daftar / Penilaian Server UDP\n 2) Daftar / Penilaian Server TCP\n 3) Ekspor Penilaian Server\n 4) Impor Penilaian Server\n 5) Atur Ulang Penilaian\n 6) Perbarui Informasi Server\n 7) Pengaturan Timeout Koneksi VPN\n 0) Kembali (Enter juga untuk kembali)\n------------------------------------------------"
-    ["msg_show_rating_menu_prompt"]="Pilih [0]: "
-    ["msg_show_rating_menu_invalid"]="Pilihan tidak valid."
+["msg_show_rating_menu_menu"]="========== Menu Pengelolaan / Penilaian Server ==========\n 1) Daftar / Penilaian Server UDP\n 2) Daftar / Penilaian Server TCP\n 3) Ekspor Penilaian Server\n 4) Impor Penilaian Server\n 5) Atur Ulang Penilaian\n 6) Perbarui Informasi Server\n 7) Pengaturan Timeout Koneksi VPN\n 0) Kembali (Enter juga untuk kembali)\n------------------------------------------------"
+["msg_show_rating_menu_prompt"]="Pilih [0]: "
+["msg_show_rating_menu_invalid"]="Pilihan tidak valid."
 
 # configure_vpn_timeout
-    ["msg_configure_vpn_timeout_title"]="--- Pengaturan Timeout Koneksi VPN ---"
-    ["msg_configure_vpn_timeout_curr_val"]=" Nilai saat ini: %s detik"
-    ["msg_configure_vpn_timeout_prompt"]="Enter new timeout in detik [1-120 / Enter to kembali]: "
-    ["msg_configure_vpn_timeout_success"]="✓ VPN timeout set to %s detik."
+["msg_configure_vpn_timeout_title"]="--- Pengaturan Timeout Koneksi VPN ---"
+["msg_configure_vpn_timeout_curr_val"]=" Nilai saat ini: %s detik"
+["msg_configure_vpn_timeout_prompt"]="Enter new timeout in detik [1-120 / Enter to kembali]: "
+["msg_configure_vpn_timeout_success"]="✓ VPN timeout set to %s detik."
 
 # permission_setup
-    ["msg_permission_setup_title"]="=== Pengaturan Awal (Izin & Autentikasi) ==="
-    ["msg_permission_setup_step1"]="1. Setting up izin and directories..."
-    ["msg_permission_setup_dir_created"]="   ✓ Created data direktori: %s"
-    ["msg_permission_setup_log_created"]="   ✓ Created log direktori: %s"
-    ["msg_permission_setup_step2"]="1.5. Menyiapkan pengelolaan log OS (logrotate)..."
-    ["msg_permission_setup_logrotate_success"]="   ✓ Installed logrotate konfigurasi: %s"
-    ["msg_permission_setup_logrotate_fail"]="   ⚠️ Gagal to install logrotate konfigurasi (check sudo izin)."
-    ["msg_permission_setup_step3"]="2. Enter FastestVPN ID/kata sandi credentials..."
-    ["msg_permission_setup_user_prompt"]="ID pengguna FastestVPN (alamat email): "
-    ["msg_permission_setup_pass_prompt"]="Kata sandi: "
-    ["msg_permission_setup_auth_success"]="   ✓ ID/kata sandi credentials configured and saved."
-    ["msg_permission_setup_auth_fail"]="   ⚠️ Gagal to save ID/kata sandi credentials."
+["msg_permission_setup_title"]="=== Pengaturan Awal (Izin & Autentikasi) ==="
+["msg_permission_setup_step1"]="1. Setting up izin and directories..."
+["msg_permission_setup_dir_created"]="   ✓ Created data direktori: %s"
+["msg_permission_setup_dir_exists"]="   ✓ Pemeriksaan direktori data selesai"
+["msg_permission_setup_permissions_done"]="   ✓ Izin berhasil dikonfigurasi"
+["msg_permission_setup_credentials_title"]="2. Mengatur kredensial (ID/KATA SANDI)"
+["msg_permission_setup_current_user"]="   (Pengguna yang saat ini dikonfigurasi: %s)"
+["msg_permission_setup_keep_existing"]="   * Tekan Enter untuk mempertahankan item yang tidak diubah."
+["msg_permission_setup_user_prompt"]="Nama pengguna (ID) [%s]: "
+["msg_permission_setup_pass_prompt"]="Kata sandi: "
+["msg_permission_setup_auth_missing"]="Error: nama pengguna atau kata sandi belum diatur. Penyimpanan kredensial dilewati."
+["msg_permission_setup_auth_saved"]="✓ Kredensial disimpan: %s"
+["msg_permission_setup_complete"]="Penyiapan awal (izin) selesai."
 
 # permission_cleanup
-    ["msg_permission_cleanup_title"]="=== Pembersihan Saat Keluar (Pembersihan & Penghapusan Kredensial) ==="
-    ["msg_permission_cleanup_pid_removed"]="✓ File PID yang tersisa dihapus (PID: %s)"
-    ["msg_permission_cleanup_pid_unknown"]="Tidak diketahui"
-    ["msg_permission_cleanup_logrotate_removed"]="✓ Removed logrotate konfigurasi file: %s"
-    ["msg_permission_cleanup_auth_removed"]="✓ Removed autentikasi file (auth.conf)."
-    ["msg_permission_cleanup_no_cleanup"]="✓ Tidak ada files required removal or cleanup."
-    ["msg_permission_cleanup_cleanup_done"]="Keluar cleanup completed."
+["msg_permission_cleanup_title"]="=== Pembersihan Saat Keluar (Pembersihan & Penghapusan Kredensial) ==="
+["msg_permission_cleanup_pid_removed"]="✓ File PID yang tersisa dihapus (PID: %s)"
+["msg_permission_cleanup_pid_unknown"]="Tidak diketahui"
+["msg_permission_cleanup_no_cleanup"]="✓ Tidak ada files required removal or cleanup."
+["msg_permission_cleanup_cleanup_done"]="Keluar cleanup completed."
 
 # show_setup_cleanup_menu
-    ["msg_show_setup_cleanup_menu_menu"]="========== Pengaturan Mulai / Henti Penggunaan ==========\n 1) Mulai menggunakan FVPN (beri izin / atur autentikasi) * Jalankan sebelum mulai menggunakan.\n 2) Hentikan penggunaan FVPN (cabut izin) * Jalankan sebelum menghapus aplikasi.\n 0) Kembali (Enter juga untuk kembali)\n--------------------------------------------"
-    ["msg_show_setup_cleanup_menu_prompt"]="Pilih [0]: "
-    ["msg_show_setup_cleanup_menu_invalid"]="Pilihan tidak valid."
+["msg_show_setup_cleanup_menu_menu"]="========== Pengaturan Mulai / Henti Penggunaan ==========\n 1) Mulai menggunakan FVPN (beri izin / atur autentikasi) * Jalankan sebelum mulai menggunakan.\n 2) Hentikan penggunaan FVPN (cabut izin) * Jalankan sebelum menghapus aplikasi.\n 0) Kembali (Enter juga untuk kembali)\n--------------------------------------------"
+["msg_show_setup_cleanup_menu_prompt"]="Pilih [0]: "
+["msg_show_setup_cleanup_menu_invalid"]="Pilihan tidak valid."
 
 # show_main_menu
-    ["msg_show_main_menu_opts"]=" 1) Koneksi VPN Cepat (hubungkan ke server target)\n 2) Putuskan VPN\n 3) Hubungkan ke Server Tertentu\n 4) Pengaturan Koneksi Cepat (mode / protokol / filter)\n 5) Pengelolaan / Penilaian / Pembaruan Server\n 9) Mulai / Hentikan Penggunaan (Izin / Autentikasi)\n 0) Keluar"
-    ["msg_show_main_menu_prompt"]="Pilih [0-9]: "
-    ["msg_show_main_menu_exit"]="Keluar dari FVPN."
-    ["msg_show_main_menu_invalid"]="❌ Pilihan tidak valid."
+["msg_show_main_menu_opts"]=" 1) Koneksi VPN Cepat (hubungkan ke server target)\n 2) Putuskan VPN\n 3) Hubungkan ke Server Tertentu\n 4) Pengaturan Koneksi Cepat (mode / protokol / filter)\n 5) Pengelolaan / Penilaian / Pembaruan Server\n 9) Mulai / Hentikan Penggunaan (Izin / Autentikasi)\n 0) Keluar"
+["msg_show_main_menu_prompt"]="Pilih [0-9]: "
+["msg_show_main_menu_exit"]="Keluar dari FVPN."
+["msg_show_main_menu_invalid"]="❌ Pilihan tidak valid."
 )

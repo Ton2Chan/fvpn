@@ -1,141 +1,140 @@
 # Hindi
 
-declare -gA MSG=(
+declare -A MSG=(
+
 # show_status_header
-    ["msg_show_status_header_auth_prefix"]="प्रमाणीकरण:"
+["msg_show_status_header_auth_prefix"]="प्रमाणीकरण:"
 
 # connect_by_master_index_wm
-    ["msg_connect_by_master_index_wm_success"]=" ✓  ✓ VPN कनेक्शन सफलतापूर्वक स्थापित हुआ।"
-    ["msg_connect_by_master_index_wm_fail"]=" ❌  ❌ VPN कनेक्शन विफल हुआ।"
-    ["msg_connect_by_master_index_wm_lockdown"]=" 🔒  🔒 ट्रैफ़िक Kill Switch (LOCKDOWN) द्वारा सुरक्षित है।"
+["msg_connect_by_master_index_wm_success"]=" ✓  ✓ VPN कनेक्शन सफलतापूर्वक स्थापित हुआ।"
+["msg_connect_by_master_index_wm_fail"]=" ❌  ❌ VPN कनेक्शन विफल हुआ।"
+["msg_connect_by_master_index_wm_lockdown"]=" 🔒  🔒 ट्रैफ़िक Kill Switch (LOCKDOWN) द्वारा सुरक्षित है।"
 
 # disconnect_vpn
-    ["msg_disconnect_vpn_executing"]="VPN डिस्कनेक्ट हो रहा है..."
-    ["msg_disconnect_vpn_restored"]="✓ प्रत्यक्ष IP ट्रैफ़िक बहाल किया गया।"
-    ["msg_disconnect_vpn_failed"]="❌ भौतिक प्रक्रियाओं को रोकने में विफल।"
+["msg_disconnect_vpn_executing"]="VPN डिस्कनेक्ट हो रहा है..."
+["msg_disconnect_vpn_restored"]="✓ प्रत्यक्ष IP ट्रैफ़िक बहाल किया गया।"
+["msg_disconnect_vpn_failed"]="❌ भौतिक प्रक्रियाओं को रोकने में विफल।"
 
 # exit_fvpn
-    ["msg_exit_fvpn_warn"]="⚠️ ⚠️ VPN वर्तमान में कनेक्ट है (या सुरक्षा लॉक सक्रिय है)।"
-    ["msg_exit_fvpn_confirm"]="VPN डिस्कनेक्ट करके बाहर निकलें? [y/N]: "
-    ["msg_exit_fvpn_keep_lock"]="VPN सुरक्षा (Kill Switch) सक्रिय रहेगी।"
+["msg_exit_fvpn_warn"]="⚠️ ⚠️ VPN वर्तमान में कनेक्ट है (या सुरक्षा लॉक सक्रिय है)।"
+["msg_exit_fvpn_confirm"]="VPN डिस्कनेक्ट करके बाहर निकलें? [y/N]: "
+["msg_exit_fvpn_keep_lock"]="VPN सुरक्षा (Kill Switch) सक्रिय रहेगी।"
 
 # configure_connect_mode
-    ["msg_configure_connect_mode_opt1"]="1: स्थिर (always कनेक्ट to the चयनित target सर्वर)"
-    ["msg_configure_connect_mode_opt2"]="2: क्रमिक (rotate to the next सर्वर on each कनेक्शन)"
-    ["msg_configure_connect_mode_opt3"]="3: यादृच्छिक (automatically select a matching सर्वर each time)"
-    ["msg_configure_connect_mode_prompt"]="मोड चुनें [1-3]: "
+["msg_configure_connect_mode_opt1"]="1: स्थिर (always कनेक्ट to the चयनित target सर्वर)"
+["msg_configure_connect_mode_opt2"]="2: क्रमिक (rotate to the next सर्वर on each कनेक्शन)"
+["msg_configure_connect_mode_opt3"]="3: यादृच्छिक (automatically select a matching सर्वर each time)"
+["msg_configure_connect_mode_prompt"]="मोड चुनें [1-3]: "
 
 # configure_protocol_mode
-    ["msg_configure_protocol_mode_opt1"]="1: केवल UDP (fast / recommended)"
-    ["msg_configure_protocol_mode_opt2"]="2: केवल TCP (stability first)"
-    ["msg_configure_protocol_mode_opt3"]="3: मिश्रित (select from both UDP and TCP)"
-    ["msg_configure_protocol_mode_prompt"]="प्रोटोकॉल चुनें [1-3]: "
-    ["msg_configure_protocol_mode_invalid"]="⚠️ अमान्य विकल्प। 1 से 3 के बीच मान दर्ज करें।"
+["msg_configure_protocol_mode_opt1"]="1: केवल UDP (fast / recommended)"
+["msg_configure_protocol_mode_opt2"]="2: केवल TCP (stability first)"
+["msg_configure_protocol_mode_opt3"]="3: मिश्रित (select from both UDP and TCP)"
+["msg_configure_protocol_mode_prompt"]="प्रोटोकॉल चुनें [1-3]: "
 
 # configure_filter_level
-    ["msg_configure_filter_level_menu"]="--- चुनें कनेक्शन फ़िल्टर स्तर ---\n 4)  [4] 3  2  1  0  : चुनें रेटिंग 4 (favorites) only\n 3)  [4  3] 2  1  0  : चुनें रेटिंग 3 (usable) and above\n 2)  [4  3  2] 1  0  : चुनें रेटिंग 2 (standard / unrated) and above\n 1)  [4  3  2  1] 0  : चुनें रेटिंग 1 (barely usable) and above\n 0)  [4  3  2  1  0] : चुनें all सर्वर\n---------------------------------------------------"
-    ["msg_configure_filter_level_prompt"]="स्तर चुनें [0-4 / वापस जाने के लिए Enter]: "
+["msg_configure_filter_level_menu"]="--- चुनें कनेक्शन फ़िल्टर स्तर ---\n 4)  [4] 3  2  1  0  : चुनें रेटिंग 4 (favorites) only\n 3)  [4  3] 2  1  0  : चुनें रेटिंग 3 (usable) and above\n 2)  [4  3  2] 1  0  : चुनें रेटिंग 2 (standard / unrated) and above\n 1)  [4  3  2  1] 0  : चुनें रेटिंग 1 (barely usable) and above\n 0)  [4  3  2  1  0] : चुनें all सर्वर\n---------------------------------------------------"
+["msg_configure_filter_level_prompt"]="स्तर चुनें [0-4 / वापस जाने के लिए Enter]: "
 
 # update_servers
-    ["msg_update_servers_net_error"]="नेटवर्क से कनेक्ट नहीं हो सका।"
-    ["msg_update_servers_dl_fail"]="⚠️ अपडेट फ़ाइल डाउनलोड विफल हुआ।"
-    ["msg_update_servers_apply_fail"]="⚠️ अपडेट पैकेज लागू करना विफल हुआ।"
-    ["msg_update_servers_success"]="✓ सर्वर सूची अपडेट सफलतापूर्वक पूरा हुआ।"
+["msg_update_servers_net_error"]="नेटवर्क से कनेक्ट नहीं हो सका।"
+["msg_update_servers_dl_fail"]="⚠️ अपडेट फ़ाइल डाउनलोड विफल हुआ।"
+["msg_update_servers_apply_fail"]="⚠️ अपडेट पैकेज लागू करना विफल हुआ।"
+["msg_update_servers_success"]="✓ सर्वर सूची अपडेट सफलतापूर्वक पूरा हुआ।"
 
 # export_server_ratings
-    ["msg_export_server_ratings_dir_error"]="त्रुटि: विफल to create the destination डायरेक्टरी (%s)."
-    ["msg_export_server_ratings_no_data"]="त्रुटि: कोई सर्वर data is available to export."
-    ["msg_export_server_ratings_success"]="✓ Exported %s सर्वर रेटिंग records."
-    ["msg_export_server_ratings_out_path"]="  आउटपुट: %s"
-    ["msg_export_server_ratings_no_target"]="त्रुटि: कोई data was available for export."
+["msg_export_server_ratings_dir_error"]="त्रुटि: विफल to create the destination डायरेक्टरी (%s)."
+["msg_export_server_ratings_no_data"]="त्रुटि: कोई सर्वर data is available to export."
+["msg_export_server_ratings_success"]="✓ Exported %s सर्वर रेटिंग records."
+["msg_export_server_ratings_out_path"]="  आउटपुट: %s"
+["msg_export_server_ratings_no_target"]="त्रुटि: कोई data was available for export."
 
 # import_server_ratings
-    ["msg_import_server_ratings_no_file"]="त्रुटि: कोई फ़ाइल to import was found."
-    ["msg_import_server_ratings_check_path"]="  जाँच पथ: %s"
-    ["msg_import_server_ratings_executing"]="Importing सर्वर रेटिंग data..."
-    ["msg_import_server_ratings_no_valid_data"]="चेतावनी: कोई valid रेटिंग data was found in the import फ़ाइल."
-    ["msg_import_server_ratings_success"]="✓ Imported %s सर्वर रेटिंग records."
-    ["msg_import_server_ratings_no_change"]="जानकारी: कोई changes were made to the रेटिंग data."
+["msg_import_server_ratings_no_file"]="त्रुटि: कोई फ़ाइल to import was found."
+["msg_import_server_ratings_check_path"]="  जाँच पथ: %s"
+["msg_import_server_ratings_executing"]="Importing सर्वर रेटिंग data..."
+["msg_import_server_ratings_no_valid_data"]="चेतावनी: कोई valid रेटिंग data was found in the import फ़ाइल."
+["msg_import_server_ratings_success"]="✓ Imported %s सर्वर रेटिंग records."
+["msg_import_server_ratings_no_change"]="जानकारी: कोई changes were made to the रेटिंग data."
 
 # quick_connect
-    ["msg_quick_connect_no_active_servers"]="❌ कोई कनेक्टable सर्वर passed the वर्तमान फ़िल्टर."
+["msg_quick_connect_no_active_servers"]="❌ कोई कनेक्टable सर्वर passed the वर्तमान फ़िल्टर."
 
 # show_quick_connect_settings
-    ["msg_show_quick_connect_settings_menu"]="========== त्वरित कनेक्शन सेटिंग्स ==========\n 1) कनेक्शन मोड : %s\n 2) प्रोटोकॉल    : %s\n 3) फ़िल्टर स्तर : %s\n 0) वापस (Enter से भी वापस जाएँ)\n----------------------------------"
-    ["msg_show_quick_connect_settings_prompt"]="चयन [0]: "
-    ["msg_show_quick_connect_settings_invalid"]="अमान्य विकल्प।"
-    ["msg_show_quick_connect_settings_mode_fixed"]="[1:स्थिर] 2:क्रमिक  3:यादृच्छिक"
-    ["msg_show_quick_connect_settings_mode_seq"]=" 1:स्थिर [2:क्रमिक] 3:यादृच्छिक"
-    ["msg_show_quick_connect_settings_mode_random"]=" 1:स्थिर  2:क्रमिक [3:यादृच्छिक]"
+["msg_show_quick_connect_settings_mode_fixed"]="[1:स्थिर] 2:क्रमिक  3:यादृच्छिक"
+["msg_show_quick_connect_settings_mode_seq"]=" 1:स्थिर [2:क्रमिक] 3:यादृच्छिक"
+["msg_show_quick_connect_settings_mode_random"]=" 1:स्थिर  2:क्रमिक [3:यादृच्छिक]"
+["msg_show_quick_connect_settings_menu"]="========== त्वरित कनेक्शन सेटिंग्स ==========\n 1) कनेक्शन मोड : %s\n 2) प्रोटोकॉल: %s\n 3) फ़िल्टर स्तर : %s\n 0) वापस (Enter से भी वापस जाएँ)\n----------------------------------"
+["msg_show_quick_connect_settings_prompt"]="चयन [0]: "
+["msg_show_quick_connect_settings_invalid"]="अमान्य विकल्प।"
 
 # reset_ratings_menu
-    ["msg_reset_ratings_menu_confirm"]="Initialize all सर्वर रेटिंग to the default (2)? (y/N): "
-    ["msg_reset_ratings_menu_success"]="✓ Operation completed. (फ़िल्टर स्तर reset to 0)"
-    ["msg_reset_ratings_menu_canceled"]="रद्द किया गया।"
+["msg_reset_ratings_menu_confirm"]="Initialize all सर्वर रेटिंग to the default (2)? (y/N): "
+["msg_reset_ratings_menu_success"]="✓ Operation completed. (फ़िल्टर स्तर reset to 0)"
+["msg_reset_ratings_menu_canceled"]="रद्द किया गया।"
 
 # manage_protocol_servers
-    ["msg_manage_protocol_servers_no_servers"]="(कोई matching %s सर्वर)"
-    ["msg_manage_protocol_servers_list_header"]="========== %s सर्वर List / Rating Settings =========="
-    ["msg_manage_protocol_servers_legend"]=" रेटिंग विवरण: 4:पसंदीदा, 2:अनरेटेड, 1:बमुश्किल उपयोग योग्य, 3:उपयोग योग्य, 0:बहिष्कृत"
-    ["msg_manage_protocol_servers_select_prompt"]="चुनें the सर्वर number to change the रेटिंग [Enter or 0 to वापस]: "
-    ["msg_manage_protocol_servers_out_of_range"]="⚠️ Enter a मान from 1 to %s."
-    ["msg_manage_protocol_servers_val_prompt"]="Enter the new रेटिंग [0-4]: "
-    ["msg_manage_protocol_servers_invalid_val"]="⚠️ Enter a मान from 0 to 4."
+["msg_manage_protocol_servers_no_servers"]="(कोई matching %s सर्वर)"
+["msg_manage_protocol_servers_list_header"]="========== %s सर्वर List / Rating Settings =========="
+["msg_manage_protocol_servers_legend"]=" रेटिंग विवरण: 4:पसंदीदा, 2:अनरेटेड, 1:बमुश्किल उपयोग योग्य, 3:उपयोग योग्य, 0:बहिष्कृत"
+["msg_manage_protocol_servers_select_prompt"]="चुनें the सर्वर number to change the रेटिंग [Enter or 0 to वापस]: "
+["msg_manage_protocol_servers_out_of_range"]="⚠️ Enter a मान from 1 to %s."
+["msg_manage_protocol_servers_val_prompt"]="Enter the new रेटिंग [0-4]: "
+["msg_manage_protocol_servers_invalid_val"]="⚠️ Enter a मान from 0 to 4."
 
 # select_vpn_server
-    ["msg_select_vpn_server_title"]="========== Connect to Specific सर्वर =========="
-    ["msg_select_vpn_server_opts"]=" 1) UDP\n 2) TCP\n 0) वापस (Enter also वापसs)"
-    ["msg_select_vpn_server_proto_prompt"]="चुनें [0-2]: "
-    ["msg_select_vpn_server_canceled"]="रद्द किया गया।"
-    ["msg_select_vpn_server_invalid_proto"]="⚠️ अमान्य विकल्प। Enter a value from 0 to 2."
-    ["msg_select_vpn_server_no_servers"]="⚠️ There are 0 फ़िल्टर-passed सर्वर for the चयनित प्रोटोकॉल (%s)."
-    ["msg_select_vpn_server_list_header"]="--- Available सर्वरs (%s : %s) ---"
-    ["msg_select_vpn_server_num_prompt"]="Enter the सर्वर number to कनेक्ट (0:वापस): "
-    ["msg_select_vpn_server_invalid_num"]="⚠️ अमान्य input. Enter a number."
-    ["msg_select_vpn_server_not_found"]="⚠️ सर्वर number [ %s ] does not exist in the %s फ़िल्टर-passed list."
+["msg_select_vpn_server_title"]="========== Connect to Specific सर्वर =========="
+["msg_select_vpn_server_opts"]=" 1) UDP\n 2) TCP\n 0) वापस (Enter also वापसs)"
+["msg_select_vpn_server_proto_prompt"]="चुनें [0-2]: "
+["msg_select_vpn_server_canceled"]="रद्द किया गया।"
+["msg_select_vpn_server_invalid_proto"]="⚠️ अमान्य विकल्प। Enter a value from 0 to 2."
+["msg_select_vpn_server_no_servers"]="⚠️ There are 0 फ़िल्टर-passed सर्वर for the चयनित प्रोटोकॉल (%s)."
+["msg_select_vpn_server_list_header"]="--- Available सर्वरs (%s : %s) ---"
+["msg_select_vpn_server_num_prompt"]="Enter the सर्वर number to कनेक्ट (0:वापस): "
+["msg_select_vpn_server_invalid_num"]="⚠️ अमान्य input. Enter a number."
+["msg_select_vpn_server_not_found"]="⚠️ सर्वर number [ %s ] does not exist in the %s फ़िल्टर-passed list."
 
 # show_rating_menu
-    ["msg_show_rating_menu_menu"]="========== सर्वर प्रबंधन / रेटिंग मेनू ==========\n 1) UDP सर्वर सूची / रेटिंग\n 2) TCP सर्वर सूची / रेटिंग\n 3) सर्वर रेटिंग निर्यात करें\n 4) सर्वर रेटिंग आयात करें\n 5) रेटिंग रीसेट करें\n 6) सर्वर जानकारी अपडेट करें\n 7) VPN कनेक्शन टाइमआउट सेटिंग्स\n 0) वापस (Enter से भी वापस जाएँ)\n------------------------------------------------"
-    ["msg_show_rating_menu_prompt"]="चयन [0]: "
-    ["msg_show_rating_menu_invalid"]="अमान्य विकल्प।"
+["msg_show_rating_menu_menu"]="========== सर्वर प्रबंधन / रेटिंग मेनू ==========\n 1) UDP सर्वर सूची / रेटिंग\n 2) TCP सर्वर सूची / रेटिंग\n 3) सर्वर रेटिंग निर्यात करें\n 4) सर्वर रेटिंग आयात करें\n 5) रेटिंग रीसेट करें\n 6) सर्वर जानकारी अपडेट करें\n 7) VPN कनेक्शन टाइमआउट सेटिंग्स\n 0) वापस (Enter से भी वापस जाएँ)\n------------------------------------------------"
+["msg_show_rating_menu_prompt"]="चयन [0]: "
+["msg_show_rating_menu_invalid"]="अमान्य विकल्प।"
 
 # configure_vpn_timeout
-    ["msg_configure_vpn_timeout_title"]="--- VPN कनेक्शन टाइमआउट सेटिंग्स ---"
-    ["msg_configure_vpn_timeout_curr_val"]=" वर्तमान मान: %s सेकंड"
-    ["msg_configure_vpn_timeout_prompt"]="Enter new timeout in सेकंड [1-120 / Enter to वापस]: "
-    ["msg_configure_vpn_timeout_success"]="✓ VPN timeout set to %s सेकंड."
+["msg_configure_vpn_timeout_title"]="--- VPN कनेक्शन टाइमआउट सेटिंग्स ---"
+["msg_configure_vpn_timeout_curr_val"]=" वर्तमान मान: %s सेकंड"
+["msg_configure_vpn_timeout_prompt"]="Enter new timeout in सेकंड [1-120 / Enter to वापस]: "
+["msg_configure_vpn_timeout_success"]="✓ VPN timeout set to %s सेकंड."
 
 # permission_setup
-    ["msg_permission_setup_title"]="=== प्रारंभिक सेटअप (अनुमतियाँ और प्रमाणीकरण) ==="
-    ["msg_permission_setup_step1"]="1. Setting up अनुमतियाँ and directories..."
-    ["msg_permission_setup_dir_created"]="   ✓ Created data डायरेक्टरी: %s"
-    ["msg_permission_setup_log_created"]="   ✓ Created log डायरेक्टरी: %s"
-    ["msg_permission_setup_step2"]="1.5. OS लॉग प्रबंधन (logrotate) सेट कर रहे हैं..."
-    ["msg_permission_setup_logrotate_success"]="   ✓ Installed logrotate सेटिंग: %s"
-    ["msg_permission_setup_logrotate_fail"]="   ⚠️ विफल to install logrotate सेटिंग (check sudo अनुमतियाँ)."
-    ["msg_permission_setup_step3"]="2. Enter FastestVPN ID/पासवर्ड credentials..."
-    ["msg_permission_setup_user_prompt"]="FastestVPN उपयोगकर्ता ID (ईमेल पता): "
-    ["msg_permission_setup_pass_prompt"]="पासवर्ड: "
-    ["msg_permission_setup_auth_success"]="   ✓ ID/पासवर्ड credentials configured and saved."
-    ["msg_permission_setup_auth_fail"]="   ⚠️ विफल to save ID/पासवर्ड credentials."
+["msg_permission_setup_title"]="=== प्रारंभिक सेटअप (अनुमतियाँ और प्रमाणीकरण) ==="
+["msg_permission_setup_step1"]="1. Setting up अनुमतियाँ and directories..."
+["msg_permission_setup_dir_created"]="   ✓ Created data डायरेक्टरी: %s"
+["msg_permission_setup_dir_exists"]="   ✓ डेटा डायरेक्टरी की जाँच पूरी हुई"
+["msg_permission_setup_permissions_done"]="   ✓ अनुमतियाँ सफलतापूर्वक कॉन्फ़िगर की गईं"
+["msg_permission_setup_credentials_title"]="2. क्रेडेंशियल कॉन्फ़िगर करें (ID/पासवर्ड)"
+["msg_permission_setup_current_user"]="   (वर्तमान में कॉन्फ़िगर किया गया उपयोगकर्ता: %s)"
+["msg_permission_setup_keep_existing"]="   * जिस आइटम को बदलना नहीं है, उसके लिए Enter दबाएँ।"
+["msg_permission_setup_user_prompt"]="उपयोगकर्ता नाम (ID) [%s]: "
+["msg_permission_setup_pass_prompt"]="पासवर्ड: "
+["msg_permission_setup_auth_missing"]="त्रुटि: उपयोगकर्ता नाम या पासवर्ड सेट नहीं है। क्रेडेंशियल सहेजना छोड़ दिया गया।"
+["msg_permission_setup_auth_saved"]="✓ क्रेडेंशियल सहेजे गए: %s"
+["msg_permission_setup_complete"]="प्रारंभिक सेटअप (अनुमतियाँ) पूरा हुआ।"
 
 # permission_cleanup
-    ["msg_permission_cleanup_title"]="=== बाहर निकलते समय सफाई (सफाई और क्रेडेंशियल हटाना) ==="
-    ["msg_permission_cleanup_pid_removed"]="✓ Removed leftover PID फ़ाइल (PID: %s)"
-    ["msg_permission_cleanup_pid_unknown"]="अज्ञात"
-    ["msg_permission_cleanup_logrotate_removed"]="✓ Removed logrotate सेटिंग फ़ाइल: %s"
-    ["msg_permission_cleanup_auth_removed"]="✓ Removed प्रमाणीकरण फ़ाइल (auth.conf)."
-    ["msg_permission_cleanup_no_cleanup"]="✓ कोई फ़ाइलs required removal or cleanup."
-    ["msg_permission_cleanup_cleanup_done"]="बाहर निकलें cleanup completed."
+["msg_permission_cleanup_title"]="=== बाहर निकलते समय सफाई (सफाई और क्रेडेंशियल हटाना) ==="
+["msg_permission_cleanup_pid_removed"]="✓ Removed leftover PID फ़ाइल (PID: %s)"
+["msg_permission_cleanup_pid_unknown"]="अज्ञात"
+["msg_permission_cleanup_no_cleanup"]="✓ कोई फ़ाइलs required removal or cleanup."
+["msg_permission_cleanup_cleanup_done"]="बाहर निकलें cleanup completed."
 
 # show_setup_cleanup_menu
-    ["msg_show_setup_cleanup_menu_menu"]="========== उपयोग प्रारंभ / बंद सेटिंग्स ==========\n 1) उपयोग प्रारंभ करें (अनुमतियाँ / प्रमाणीकरण) * उपयोग से पहले चलाएँ।\n 2) उपयोग बंद करें (अनुमतियाँ रद्द करें) * ऐप हटाने से पहले चलाएँ।\n 0) वापस (Enter से भी वापस जाएँ)\n--------------------------------------------"
-    ["msg_show_setup_cleanup_menu_prompt"]="चयन [0]: "
-    ["msg_show_setup_cleanup_menu_invalid"]="अमान्य विकल्प।"
+["msg_show_setup_cleanup_menu_menu"]="========== उपयोग प्रारंभ / बंद सेटिंग्स ==========\n 1) उपयोग प्रारंभ करें (अनुमतियाँ / प्रमाणीकरण) * उपयोग से पहले चलाएँ।\n 2) उपयोग बंद करें (अनुमतियाँ रद्द करें) * ऐप हटाने से पहले चलाएँ।\n 0) वापस (Enter से भी वापस जाएँ)\n--------------------------------------------"
+["msg_show_setup_cleanup_menu_prompt"]="चयन [0]: "
+["msg_show_setup_cleanup_menu_invalid"]="अमान्य विकल्प।"
 
 # show_main_menu
-    ["msg_show_main_menu_opts"]=" 1) त्वरित VPN कनेक्शन (लक्ष्य सर्वर से कनेक्ट करें)\n 2) VPN डिस्कनेक्ट करें\n 3) विशिष्ट सर्वर से कनेक्ट करें\n 4) त्वरित कनेक्शन सेटिंग्स (मोड / प्रोटोकॉल / फ़िल्टर)\n 5) सर्वर प्रबंधन / रेटिंग / अपडेट\n 9) उपयोग प्रारंभ / बंद (अनुमतियाँ / प्रमाणीकरण)\n 0) बाहर निकलें"
-    ["msg_show_main_menu_prompt"]="चुनें [0-9]: "
-    ["msg_show_main_menu_exit"]="FVPN से बाहर निकल रहे हैं।"
-    ["msg_show_main_menu_invalid"]="❌ अमान्य विकल्प।"
+["msg_show_main_menu_opts"]=" 1) त्वरित VPN कनेक्शन (लक्ष्य सर्वर से कनेक्ट करें)\n 2) VPN डिस्कनेक्ट करें\n 3) विशिष्ट सर्वर से कनेक्ट करें\n 4) त्वरित कनेक्शन सेटिंग्स (मोड / प्रोटोकॉल / फ़िल्टर)\n 5) सर्वर प्रबंधन / रेटिंग / अपडेट\n 9) उपयोग प्रारंभ / बंद (अनुमतियाँ / प्रमाणीकरण)\n 0) बाहर निकलें"
+["msg_show_main_menu_prompt"]="चुनें [0-9]: "
+["msg_show_main_menu_exit"]="FVPN से बाहर निकल रहे हैं।"
+["msg_show_main_menu_invalid"]="❌ अमान्य विकल्प।"
 )

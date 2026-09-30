@@ -1,141 +1,140 @@
 # English
 
-declare -gA MSG=(
+declare -A MSG=(
+
 # show_status_header
-    ["msg_show_status_header_auth_prefix"]="Auth:"
+["msg_show_status_header_auth_prefix"]="Auth:"
 
 # connect_by_master_index_wm
-    ["msg_connect_by_master_index_wm_success"]=" ✓ VPN connection established successfully."
-    ["msg_connect_by_master_index_wm_fail"]=" ❌ VPN connection failed."
-    ["msg_connect_by_master_index_wm_lockdown"]=" 🔒 Traffic is protected by Kill Switch (LOCKDOWN)."
+["msg_connect_by_master_index_wm_success"]=" ✓ VPN connection established successfully."
+["msg_connect_by_master_index_wm_fail"]=" ❌ VPN connection failed."
+["msg_connect_by_master_index_wm_lockdown"]=" 🔒 Traffic is protected by Kill Switch (LOCKDOWN)."
 
 # disconnect_vpn
-    ["msg_disconnect_vpn_executing"]="Disconnecting VPN..."
-    ["msg_disconnect_vpn_restored"]="✓ Restored direct IP traffic."
-    ["msg_disconnect_vpn_failed"]="❌ Failed to stop the physical processes."
+["msg_disconnect_vpn_executing"]="Disconnecting VPN..."
+["msg_disconnect_vpn_restored"]="✓ Restored direct IP traffic."
+["msg_disconnect_vpn_failed"]="❌ Failed to stop the VPN processes."
 
 # exit_fvpn
-    ["msg_exit_fvpn_warn"]="⚠️ VPN is currently connected (or protection lock is active)."
-    ["msg_exit_fvpn_confirm"]="Disconnect VPN and exit? [y/N]: "
-    ["msg_exit_fvpn_keep_lock"]="VPN protection (Kill Switch) will remain active."
+["msg_exit_fvpn_warn"]="⚠️  VPN is currently connected (or the protection lock is active)."
+["msg_exit_fvpn_confirm"]="Disconnect VPN and exit? [y/N]: "
+["msg_exit_fvpn_keep_lock"]="VPN protection (Kill Switch) will remain active."
 
 # configure_connect_mode
-    ["msg_configure_connect_mode_opt1"]="1: Fixed (always connect to the selected target server)"
-    ["msg_configure_connect_mode_opt2"]="2: Sequential (rotate to the next server on each connection)"
-    ["msg_configure_connect_mode_opt3"]="3: Random (automatically select a matching server each time)"
-    ["msg_configure_connect_mode_prompt"]="Select mode [1-3]: "
+["msg_configure_connect_mode_opt1"]="1: Fixed (always connect to the selected target server)"
+["msg_configure_connect_mode_opt2"]="2: Sequential (rotate to the next server on each connection)"
+["msg_configure_connect_mode_opt3"]="3: Random (automatically select a matching server each time)"
+["msg_configure_connect_mode_prompt"]="Select mode [1-3]: "
 
 # configure_protocol_mode
-    ["msg_configure_protocol_mode_opt1"]="1: UDP only (fast / recommended)"
-    ["msg_configure_protocol_mode_opt2"]="2: TCP only (stability first)"
-    ["msg_configure_protocol_mode_opt3"]="3: Mix (select from both UDP and TCP)"
-    ["msg_configure_protocol_mode_prompt"]="Select protocol [1-3]: "
-    ["msg_configure_protocol_mode_invalid"]="⚠️ Invalid choice. Enter a value from 1 to 3."
+["msg_configure_protocol_mode_opt1"]="1: UDP only (fast / recommended)"
+["msg_configure_protocol_mode_opt2"]="2: TCP only (stability first)"
+["msg_configure_protocol_mode_opt3"]="3: Mix (select from both UDP and TCP)"
+["msg_configure_protocol_mode_prompt"]="Select protocol [1-3]: "
 
 # configure_filter_level
-    ["msg_configure_filter_level_menu"]="--- Select connection filter level ---\n 4)  [4] 3  2  1  0  : Select rating 4 (favorites) only\n 3)  [4  3] 2  1  0  : Select rating 3 (usable) and above\n 2)  [4  3  2] 1  0  : Select rating 2 (standard / unrated) and above\n 1)  [4  3  2  1] 0  : Select rating 1 (barely usable) and above\n 0)  [4  3  2  1  0] : Select all servers\n---------------------------------------------------"
-    ["msg_configure_filter_level_prompt"]="Select level [0-4 / Enter to return]: "
+["msg_configure_filter_level_menu"]="--- Select connection filter level ---\n 4)  [4] 3  2  1  0  : Select rating 4 (favorites) only\n 3)  [4  3] 2  1  0  : Select rating 3 (usable) and above\n 2)  [4  3  2] 1  0  : Select rating 2 (standard / unrated) and above\n 1)  [4  3  2  1] 0  : Select rating 1 (barely usable) and above\n 0)  [4  3  2  1  0] : Select all servers\n---------------------------------------------------"
+["msg_configure_filter_level_prompt"]="Select level [0-4 / Enter to return]: "
 
 # update_servers
-    ["msg_update_servers_net_error"]="Unable to connect to the network."
-    ["msg_update_servers_dl_fail"]="⚠️ Failed to download the update file."
-    ["msg_update_servers_apply_fail"]="⚠️ Failed to apply the update package."
-    ["msg_update_servers_success"]="✓ Server list update completed successfully."
+["msg_update_servers_net_error"]="Unable to connect to the network."
+["msg_update_servers_dl_fail"]="⚠️ Failed to download the update file."
+["msg_update_servers_apply_fail"]="⚠️ Failed to apply the update package."
+["msg_update_servers_success"]="✓ Server list update completed successfully."
 
 # export_server_ratings
-    ["msg_export_server_ratings_dir_error"]="Error: Failed to create the destination directory (%s)."
-    ["msg_export_server_ratings_no_data"]="Error: No server data is available to export."
-    ["msg_export_server_ratings_success"]="✓ Exported %s server rating records."
-    ["msg_export_server_ratings_out_path"]="  Output: %s"
-    ["msg_export_server_ratings_no_target"]="Error: No data was available for export."
+["msg_export_server_ratings_dir_error"]="Error: Failed to create the destination directory (%s)."
+["msg_export_server_ratings_no_data"]="Error: No server data is available to export."
+["msg_export_server_ratings_success"]="✓ Exported %s server rating records."
+["msg_export_server_ratings_out_path"]="  Output: %s"
+["msg_export_server_ratings_no_target"]="Error: No data was available for export."
 
 # import_server_ratings
-    ["msg_import_server_ratings_no_file"]="Error: No file to import was found."
-    ["msg_import_server_ratings_check_path"]="  Check path: %s"
-    ["msg_import_server_ratings_executing"]="Importing server rating data..."
-    ["msg_import_server_ratings_no_valid_data"]="Warning: No valid rating data was found in the import file."
-    ["msg_import_server_ratings_success"]="✓ Imported %s server rating records."
-    ["msg_import_server_ratings_no_change"]="Info: No changes were made to the rating data."
+["msg_import_server_ratings_no_file"]="Error: No file to import was found."
+["msg_import_server_ratings_check_path"]="  Check path: %s"
+["msg_import_server_ratings_executing"]="Importing server rating data..."
+["msg_import_server_ratings_no_valid_data"]="Warning: No valid rating data was found in the import file."
+["msg_import_server_ratings_success"]="✓ Imported %s server rating records."
+["msg_import_server_ratings_no_change"]="Info: No changes were made to the rating data."
 
 # quick_connect
-    ["msg_quick_connect_no_active_servers"]="❌ No connectable servers passed the current filter."
+["msg_quick_connect_no_active_servers"]="❌ No connectable servers passed the current filter."
 
 # show_quick_connect_settings
-    ["msg_show_quick_connect_settings_menu"]="========== Quick Connect Settings ==========\n 1) Connection mode : %s\n 2) Protocol        : %s\n 3) Filter level    : %s\n 0) Return (Enter also returns)\n----------------------------------"
-    ["msg_show_quick_connect_settings_prompt"]="Select [0]: "
-    ["msg_show_quick_connect_settings_invalid"]="Invalid choice."
-    ["msg_show_quick_connect_settings_mode_fixed"]="[1:Fixed] 2:Sequential  3:Random"
-    ["msg_show_quick_connect_settings_mode_seq"]=" 1:Fixed [2:Sequential] 3:Random"
-    ["msg_show_quick_connect_settings_mode_random"]=" 1:Fixed  2:Sequential [3:Random]"
+["msg_show_quick_connect_settings_mode_fixed"]="[1:Fixed] 2:Sequential  3:Random"
+["msg_show_quick_connect_settings_mode_seq"]=" 1:Fixed [2:Sequential] 3:Random"
+["msg_show_quick_connect_settings_mode_random"]=" 1:Fixed  2:Sequential [3:Random]"
+["msg_show_quick_connect_settings_menu"]="========== Quick Connect Settings ==========\n 1) Connection mode : %s\n 2) Protocol: %s\n 3) Filter level: %s\n 0) Return (Enter also returns)\n----------------------------------"
+["msg_show_quick_connect_settings_prompt"]="Select [0]: "
+["msg_show_quick_connect_settings_invalid"]="Invalid choice."
 
 # reset_ratings_menu
-    ["msg_reset_ratings_menu_confirm"]="Initialize all server ratings to the default (2)? (y/N): "
-    ["msg_reset_ratings_menu_success"]="✓ Operation completed. (Filter level reset to 0)"
-    ["msg_reset_ratings_menu_canceled"]="Canceled."
+["msg_reset_ratings_menu_confirm"]="Initialize all server ratings to the default (2)? (y/N): "
+["msg_reset_ratings_menu_success"]="✓ Operation completed. (Filter level reset to 0)"
+["msg_reset_ratings_menu_canceled"]="Canceled."
 
 # manage_protocol_servers
-    ["msg_manage_protocol_servers_no_servers"]="(No matching %s servers)"
-    ["msg_manage_protocol_servers_list_header"]="========== %s Server List / Rating Settings =========="
-    ["msg_manage_protocol_servers_legend"]=" Rating legend: 4:Favorite, 2:Unrated, 1:Barely usable, 3:Usable, 0:Excluded"
-    ["msg_manage_protocol_servers_select_prompt"]="Select the server number to change the rating [Enter or 0 to return]: "
-    ["msg_manage_protocol_servers_out_of_range"]="⚠️ Enter a value from 1 to %s."
-    ["msg_manage_protocol_servers_val_prompt"]="Enter the new rating [0-4]: "
-    ["msg_manage_protocol_servers_invalid_val"]="⚠️ Enter a value from 0 to 4."
+["msg_manage_protocol_servers_no_servers"]="(No matching %s servers)"
+["msg_manage_protocol_servers_list_header"]="========== %s Server List / Rating Settings =========="
+["msg_manage_protocol_servers_legend"]=" Rating legend: 4:Favorite, 2:Unrated, 1:Barely usable, 3:Usable, 0:Excluded"
+["msg_manage_protocol_servers_select_prompt"]="Select the server number to change the rating [Enter or 0 to return]: "
+["msg_manage_protocol_servers_out_of_range"]="⚠️ Enter a value from 1 to %s."
+["msg_manage_protocol_servers_val_prompt"]="Enter the new rating [0-4]: "
+["msg_manage_protocol_servers_invalid_val"]="⚠️ Enter a value from 0 to 4."
 
 # select_vpn_server
-    ["msg_select_vpn_server_title"]="========== Connect to Specific Server =========="
-    ["msg_select_vpn_server_opts"]=" 1) UDP\n 2) TCP\n 0) Return (Enter also returns)"
-    ["msg_select_vpn_server_proto_prompt"]="Select [0-2]: "
-    ["msg_select_vpn_server_canceled"]="Canceled."
-    ["msg_select_vpn_server_invalid_proto"]="⚠️ Invalid choice. Enter a value from 0 to 2."
-    ["msg_select_vpn_server_no_servers"]="⚠️ There are 0 filter-passed servers for the selected protocol (%s)."
-    ["msg_select_vpn_server_list_header"]="--- Available Servers (%s : %s) ---"
-    ["msg_select_vpn_server_num_prompt"]="Enter the server number to connect (0:Return): "
-    ["msg_select_vpn_server_invalid_num"]="⚠️ Invalid input. Enter a number."
-    ["msg_select_vpn_server_not_found"]="⚠️ Server number [ %s ] does not exist in the %s filter-passed list."
+["msg_select_vpn_server_title"]="========== Connect to Specific Server =========="
+["msg_select_vpn_server_opts"]=" 1) UDP\n 2) TCP\n 0) Return (Enter also returns)"
+["msg_select_vpn_server_proto_prompt"]="Select [0-2]: "
+["msg_select_vpn_server_canceled"]="Canceled."
+["msg_select_vpn_server_invalid_proto"]="⚠️ Invalid choice. Enter a value from 0 to 2."
+["msg_select_vpn_server_no_servers"]="⚠️ There are 0 filter-passed servers for the selected protocol (%s)."
+["msg_select_vpn_server_list_header"]="--- Available Servers (%s : %s) ---"
+["msg_select_vpn_server_num_prompt"]="Enter the server number to connect (0:Return): "
+["msg_select_vpn_server_invalid_num"]="⚠️ Invalid input. Enter a number."
+["msg_select_vpn_server_not_found"]="⚠️ Server number [ %s ] does not exist in the %s filter-passed list."
 
 # show_rating_menu
-    ["msg_show_rating_menu_menu"]="========== Server Management / Rating Menu ==========\n 1) UDP Server List / Rating\n 2) TCP Server List / Rating\n 3) Export Server Ratings\n 4) Import Server Ratings\n 5) Reset Ratings\n 6) Update Server Information\n 7) VPN Connection Timeout Settings\n 0) Return (Enter also returns)\n------------------------------------------------"
-    ["msg_show_rating_menu_prompt"]="Select [0]: "
-    ["msg_show_rating_menu_invalid"]="Invalid choice."
+["msg_show_rating_menu_menu"]="========== Server Management / Rating Menu ==========\n 1) UDP Server List / Rating\n 2) TCP Server List / Rating\n 3) Export Server Ratings\n 4) Import Server Ratings\n 5) Reset Ratings\n 6) Update Server Information\n 7) VPN Connection Timeout Settings\n 0) Return (Enter also returns)\n------------------------------------------------"
+["msg_show_rating_menu_prompt"]="Select [0]: "
+["msg_show_rating_menu_invalid"]="Invalid choice."
 
 # configure_vpn_timeout
-    ["msg_configure_vpn_timeout_title"]="--- VPN Connection Timeout Settings ---"
-    ["msg_configure_vpn_timeout_curr_val"]=" Current value: %s seconds"
-    ["msg_configure_vpn_timeout_prompt"]="Enter new timeout in seconds [1-120 / Enter to return]: "
-    ["msg_configure_vpn_timeout_success"]="✓ VPN timeout set to %s seconds."
+["msg_configure_vpn_timeout_title"]="--- VPN Connection Timeout Settings ---"
+["msg_configure_vpn_timeout_curr_val"]=" Current value: %s seconds"
+["msg_configure_vpn_timeout_prompt"]="Enter new timeout in seconds [1-120 / Enter to return]: "
+["msg_configure_vpn_timeout_success"]="✓ VPN timeout set to %s seconds."
 
 # permission_setup
-    ["msg_permission_setup_title"]="=== Initial Setup (Permissions & Authentication) ==="
-    ["msg_permission_setup_step1"]="1. Setting up permissions and directories..."
-    ["msg_permission_setup_dir_created"]="   ✓ Created data directory: %s"
-    ["msg_permission_setup_log_created"]="   ✓ Created log directory: %s"
-    ["msg_permission_setup_step2"]="1.5. Setting up OS log management (logrotate)..."
-    ["msg_permission_setup_logrotate_success"]="   ✓ Installed logrotate configuration: %s"
-    ["msg_permission_setup_logrotate_fail"]="   ⚠️ Failed to install logrotate configuration (check sudo permissions)."
-    ["msg_permission_setup_step3"]="2. Enter FastestVPN ID/password credentials..."
-    ["msg_permission_setup_user_prompt"]="FastestVPN user ID (email address): "
-    ["msg_permission_setup_pass_prompt"]="Password: "
-    ["msg_permission_setup_auth_success"]="   ✓ ID/password credentials configured and saved."
-    ["msg_permission_setup_auth_fail"]="   ⚠️ Failed to save ID/password credentials."
+["msg_permission_setup_title"]="=== Initial Setup (Permissions & Authentication) ==="
+["msg_permission_setup_step1"]="1. Setting up permissions and directories..."
+["msg_permission_setup_dir_created"]="   ✓ Created data directory: %s"
+["msg_permission_setup_dir_exists"]="   ✓ Data directory check completed"
+["msg_permission_setup_permissions_done"]="   ✓ Permissions configured successfully"
+["msg_permission_setup_credentials_title"]="2. Configure credentials (ID/PASS)"
+["msg_permission_setup_current_user"]="   (Current configured user: %s)"
+["msg_permission_setup_keep_existing"]="   * Press Enter to keep any unchanged item."
+["msg_permission_setup_user_prompt"]="Username (ID) [%s]: "
+["msg_permission_setup_pass_prompt"]="Password: "
+["msg_permission_setup_auth_missing"]="Error: Username or password is not set. Credential saving was skipped."
+["msg_permission_setup_auth_saved"]="✓ Credentials saved: %s"
+["msg_permission_setup_complete"]="Initial setup (permissions) completed."
 
 # permission_cleanup
-    ["msg_permission_cleanup_title"]="=== Exit Cleanup (Cleanup & Credential Removal) ==="
-    ["msg_permission_cleanup_pid_removed"]="✓ Removed leftover PID file (PID: %s)"
-    ["msg_permission_cleanup_pid_unknown"]="Unknown"
-    ["msg_permission_cleanup_logrotate_removed"]="✓ Removed logrotate configuration file: %s"
-    ["msg_permission_cleanup_auth_removed"]="✓ Removed authentication file (auth.conf)."
-    ["msg_permission_cleanup_no_cleanup"]="✓ No files required removal or cleanup."
-    ["msg_permission_cleanup_cleanup_done"]="Exit cleanup completed."
+["msg_permission_cleanup_title"]="=== Exit Cleanup (Cleanup & Credential Removal) ==="
+["msg_permission_cleanup_pid_removed"]="✓ Removed leftover PID file (PID: %s)"
+["msg_permission_cleanup_pid_unknown"]="Unknown"
+["msg_permission_cleanup_no_cleanup"]="✓ No files required removal or cleanup."
+["msg_permission_cleanup_cleanup_done"]="Exit cleanup completed."
 
 # show_setup_cleanup_menu
-    ["msg_show_setup_cleanup_menu_menu"]="========== Start / Stop Usage Settings ==========\n 1) Start using FVPN (grant permissions / set authentication) * Run this before starting use.\n 2) Stop using FVPN (revoke permissions) * Run this before removing the application.\n 0) Return (Enter also returns)\n--------------------------------------------"
-    ["msg_show_setup_cleanup_menu_prompt"]="Select [0]: "
-    ["msg_show_setup_cleanup_menu_invalid"]="Invalid choice."
+["msg_show_setup_cleanup_menu_menu"]="========== Start / Stop Usage Settings ==========\n 1) Start using FVPN (grant permissions / set authentication) * Run this before starting use.\n 2) Stop using FVPN (revoke permissions) * Run this before removing the application.\n 0) Return (Enter also returns)\n--------------------------------------------"
+["msg_show_setup_cleanup_menu_prompt"]="Select [0]: "
+["msg_show_setup_cleanup_menu_invalid"]="Invalid choice."
 
 # show_main_menu
-    ["msg_show_main_menu_opts"]=" 1) Quick VPN Connect (connect to target server)\n 2) Disconnect VPN\n 3) Connect to Specific Server\n 4) Quick Connect Settings (mode / protocol / filter)\n 5) Server Management / Rating / Update\n 9) Start / Stop Usage (Permissions / Authentication)\n 0) Exit"
-    ["msg_show_main_menu_prompt"]="Select [0-9]: "
-    ["msg_show_main_menu_exit"]="Exiting FVPN."
-    ["msg_show_main_menu_invalid"]="❌ Invalid choice."
+["msg_show_main_menu_opts"]=" 1) Quick VPN Connect (connect to target server)\n 2) Disconnect VPN\n 3) Connect to Specific Server\n 4) Quick Connect Settings (mode / protocol / filter)\n 5) Server Management / Rating / Update\n 9) Start / Stop Usage (Permissions / Authentication)\n 0) Exit"
+["msg_show_main_menu_prompt"]="Select [0-9]: "
+["msg_show_main_menu_exit"]="Exiting FVPN."
+["msg_show_main_menu_invalid"]="❌ Invalid choice."
 )

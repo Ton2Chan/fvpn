@@ -1,141 +1,140 @@
 # Chinese (Simplified)
 
-declare -gA MSG=(
+declare -A MSG=(
+
 # show_status_header
-    ["msg_show_status_header_auth_prefix"]="认证:"
+["msg_show_status_header_auth_prefix"]="认证:"
 
 # connect_by_master_index_wm
-    ["msg_connect_by_master_index_wm_success"]=" ✓ ✓ VPN 连接已成功建立。"
-    ["msg_connect_by_master_index_wm_fail"]=" ❌ ❌ VPN 连接失败。"
-    ["msg_connect_by_master_index_wm_lockdown"]=" 🔒 🔒 Kill Switch（LOCKDOWN）正在保护网络流量。"
+["msg_connect_by_master_index_wm_success"]=" ✓ ✓ VPN 连接已成功建立。"
+["msg_connect_by_master_index_wm_fail"]=" ❌ ❌ VPN 连接失败。"
+["msg_connect_by_master_index_wm_lockdown"]=" 🔒 🔒 Kill Switch（LOCKDOWN）正在保护网络流量。"
 
 # disconnect_vpn
-    ["msg_disconnect_vpn_executing"]="正在断开 VPN..."
-    ["msg_disconnect_vpn_restored"]="✓ 已恢复直接 IP 流量。"
-    ["msg_disconnect_vpn_failed"]="❌ 停止底层进程失败。"
+["msg_disconnect_vpn_executing"]="正在断开 VPN..."
+["msg_disconnect_vpn_restored"]="✓ 已恢复直接 IP 流量。"
+["msg_disconnect_vpn_failed"]="❌ 停止底层进程失败。"
 
 # exit_fvpn
-    ["msg_exit_fvpn_warn"]="⚠️ VPN 当前已连接（或保护锁已启用）。"
-    ["msg_exit_fvpn_confirm"]="断开 VPN 并退出？[y/N]: "
-    ["msg_exit_fvpn_keep_lock"]="VPN 保护（Kill Switch）将继续保持启用。"
+["msg_exit_fvpn_warn"]="⚠️ VPN 当前已连接（或保护锁已启用）。"
+["msg_exit_fvpn_confirm"]="断开 VPN 并退出？[y/N]: "
+["msg_exit_fvpn_keep_lock"]="VPN 保护（Kill Switch）将继续保持启用。"
 
 # configure_connect_mode
-    ["msg_configure_connect_mode_opt1"]="1: 固定 (always 连接 to the 所选 target 服务器)"
-    ["msg_configure_connect_mode_opt2"]="2: 顺序 (rotate to the next 服务器 on each 连接)"
-    ["msg_configure_connect_mode_opt3"]="3: 随机 (automatically select a matching 服务器 each time)"
-    ["msg_configure_connect_mode_prompt"]="选择模式 [1-3]: "
+["msg_configure_connect_mode_opt1"]="1: 固定 (always 连接 to the 所选 target 服务器)"
+["msg_configure_connect_mode_opt2"]="2: 顺序 (rotate to the next 服务器 on each 连接)"
+["msg_configure_connect_mode_opt3"]="3: 随机 (automatically select a matching 服务器 each time)"
+["msg_configure_connect_mode_prompt"]="选择模式 [1-3]: "
 
 # configure_protocol_mode
-    ["msg_configure_protocol_mode_opt1"]="1: 仅 UDP (fast / recommended)"
-    ["msg_configure_protocol_mode_opt2"]="2: 仅 TCP (stability first)"
-    ["msg_configure_protocol_mode_opt3"]="3: 混合 (select from both UDP and TCP)"
-    ["msg_configure_protocol_mode_prompt"]="选择协议 [1-3]: "
-    ["msg_configure_protocol_mode_invalid"]="⚠️ 选择无效。请输入 1 到 3。"
+["msg_configure_protocol_mode_opt1"]="1: 仅 UDP (fast / recommended)"
+["msg_configure_protocol_mode_opt2"]="2: 仅 TCP (stability first)"
+["msg_configure_protocol_mode_opt3"]="3: 混合 (select from both UDP and TCP)"
+["msg_configure_protocol_mode_prompt"]="选择协议 [1-3]: "
 
 # configure_filter_level
-    ["msg_configure_filter_level_menu"]="--- 选择连接过滤等级 ---\n 4)  [4] 3  2  1  0  : 仅选择评分4（收藏）\n 3)  [4  3] 2  1  0  : 选择评分3（可用）及以上\n 2)  [4  3  2] 1  0  : 选择评分2（标准 / 未评分）及以上\n 1)  [4  3  2  1] 0  : 选择评分1（勉强可用）及以上\n 0)  [4  3  2  1  0] : 选择全部服务器\n---------------------------------------------------"
-    ["msg_configure_filter_level_prompt"]="选择等级 [0-4 / 回车返回]: "
+["msg_configure_filter_level_menu"]="--- 选择连接过滤等级 ---\n 4)  [4] 3  2  1  0  : 仅选择评分4（收藏）\n 3)  [4  3] 2  1  0  : 选择评分3（可用）及以上\n 2)  [4  3  2] 1  0  : 选择评分2（标准 / 未评分）及以上\n 1)  [4  3  2  1] 0  : 选择评分1（勉强可用）及以上\n 0)  [4  3  2  1  0] : 选择全部服务器\n---------------------------------------------------"
+["msg_configure_filter_level_prompt"]="选择等级 [0-4 / 回车返回]: "
 
 # update_servers
-    ["msg_update_servers_net_error"]="无法连接到网络。"
-    ["msg_update_servers_dl_fail"]="⚠️ 更新文件下载失败。"
-    ["msg_update_servers_apply_fail"]="⚠️ 更新包应用失败。"
-    ["msg_update_servers_success"]="✓ 服务器列表更新成功完成。"
+["msg_update_servers_net_error"]="无法连接到网络。"
+["msg_update_servers_dl_fail"]="⚠️ 更新文件下载失败。"
+["msg_update_servers_apply_fail"]="⚠️ 更新包应用失败。"
+["msg_update_servers_success"]="✓ 服务器列表更新成功完成。"
 
 # export_server_ratings
-    ["msg_export_server_ratings_dir_error"]="错误： Failed to create the destination directory (%s)."
-    ["msg_export_server_ratings_no_data"]="错误： No server data is available to export."
-    ["msg_export_server_ratings_success"]="✓ 已导出 %s 条服务器评分记录。"
-    ["msg_export_server_ratings_out_path"]="  输出： %s"
-    ["msg_export_server_ratings_no_target"]="错误： No data was available for export."
+["msg_export_server_ratings_dir_error"]="错误： Failed to create the destination directory (%s)."
+["msg_export_server_ratings_no_data"]="错误： No server data is available to export."
+["msg_export_server_ratings_success"]="✓ 已导出 %s 条服务器评分记录。"
+["msg_export_server_ratings_out_path"]="  输出： %s"
+["msg_export_server_ratings_no_target"]="错误： No data was available for export."
 
 # import_server_ratings
-    ["msg_import_server_ratings_no_file"]="错误： No file to import was found."
-    ["msg_import_server_ratings_check_path"]="  检查路径： %s"
-    ["msg_import_server_ratings_executing"]="正在导入服务器评分数据..."
-    ["msg_import_server_ratings_no_valid_data"]="警告： No valid rating data was found in the import file."
-    ["msg_import_server_ratings_success"]="✓ 已导入 %s 条服务器评分记录。"
-    ["msg_import_server_ratings_no_change"]="信息： No changes were made to the rating data."
+["msg_import_server_ratings_no_file"]="错误： No file to import was found."
+["msg_import_server_ratings_check_path"]="  检查路径： %s"
+["msg_import_server_ratings_executing"]="正在导入服务器评分数据..."
+["msg_import_server_ratings_no_valid_data"]="警告： No valid rating data was found in the import file."
+["msg_import_server_ratings_success"]="✓ 已导入 %s 条服务器评分记录。"
+["msg_import_server_ratings_no_change"]="信息： No changes were made to the rating data."
 
 # quick_connect
-    ["msg_quick_connect_no_active_servers"]="❌ 当前过滤条件下没有可连接的服务器。"
+["msg_quick_connect_no_active_servers"]="❌ 当前过滤条件下没有可连接的服务器。"
 
 # show_quick_connect_settings
-    ["msg_show_quick_connect_settings_menu"]="========== 快速连接设置 ==========\n 1) 连接模式 : %s\n 2) 协议     : %s\n 3) 过滤等级 : %s\n 0) 返回（直接回车也可返回）\n----------------------------------"
-    ["msg_show_quick_connect_settings_prompt"]="选择 [0]: "
-    ["msg_show_quick_connect_settings_invalid"]="选择无效。"
-    ["msg_show_quick_connect_settings_mode_fixed"]="[1:固定] 2:顺序  3:随机"
-    ["msg_show_quick_connect_settings_mode_seq"]=" 1:固定 [2:顺序] 3:随机"
-    ["msg_show_quick_connect_settings_mode_random"]=" 1:固定  2:顺序 [3:随机]"
+["msg_show_quick_connect_settings_mode_fixed"]="[1:固定] 2:顺序  3:随机"
+["msg_show_quick_connect_settings_mode_seq"]=" 1:固定 [2:顺序] 3:随机"
+["msg_show_quick_connect_settings_mode_random"]=" 1:固定  2:顺序 [3:随机]"
+["msg_show_quick_connect_settings_menu"]="========== 快速连接设置 ==========\n 1) 连接模式 : %s\n 2) 协议 : %s\n 3) 过滤等级 : %s\n 0) 返回（直接回车也可返回）\n----------------------------------"
+["msg_show_quick_connect_settings_prompt"]="选择 [0]: "
+["msg_show_quick_connect_settings_invalid"]="选择无效。"
 
 # reset_ratings_menu
-    ["msg_reset_ratings_menu_confirm"]="将所有服务器评分初始化为默认值（2）？(y/N): "
-    ["msg_reset_ratings_menu_success"]="✓ 操作完成。（过滤等级已重置为0）"
-    ["msg_reset_ratings_menu_canceled"]="已取消。"
+["msg_reset_ratings_menu_confirm"]="将所有服务器评分初始化为默认值（2）？(y/N): "
+["msg_reset_ratings_menu_success"]="✓ 操作完成。（过滤等级已重置为0）"
+["msg_reset_ratings_menu_canceled"]="已取消。"
 
 # manage_protocol_servers
-    ["msg_manage_protocol_servers_no_servers"]="(没有matching %s 服务器)"
-    ["msg_manage_protocol_servers_list_header"]="========== %s 服务器列表 / 评分设置 =========="
-    ["msg_manage_protocol_servers_legend"]=" 评分说明：4:收藏, 2:未评分, 1:勉强可用, 3:可用, 0:排除"
-    ["msg_manage_protocol_servers_select_prompt"]="选择要修改评分的服务器编号 [Enter或0返回]: "
-    ["msg_manage_protocol_servers_out_of_range"]="⚠️ 请输入1到%s之间的值。"
-    ["msg_manage_protocol_servers_val_prompt"]="请输入新评分 [0-4]: "
-    ["msg_manage_protocol_servers_invalid_val"]="⚠️ 请输入0到4之间的值。"
+["msg_manage_protocol_servers_no_servers"]="(没有matching %s 服务器)"
+["msg_manage_protocol_servers_list_header"]="========== %s 服务器列表 / 评分设置 =========="
+["msg_manage_protocol_servers_legend"]=" 评分说明：4:收藏, 2:未评分, 1:勉强可用, 3:可用, 0:排除"
+["msg_manage_protocol_servers_select_prompt"]="选择要修改评分的服务器编号 [Enter或0返回]: "
+["msg_manage_protocol_servers_out_of_range"]="⚠️ 请输入1到%s之间的值。"
+["msg_manage_protocol_servers_val_prompt"]="请输入新评分 [0-4]: "
+["msg_manage_protocol_servers_invalid_val"]="⚠️ 请输入0到4之间的值。"
 
 # select_vpn_server
-    ["msg_select_vpn_server_title"]="========== 连接到指定服务器 =========="
-    ["msg_select_vpn_server_opts"]=" 1) UDP\n 2) TCP\n 0) 返回（直接回车也可返回）"
-    ["msg_select_vpn_server_proto_prompt"]="选择 [0-2]: "
-    ["msg_select_vpn_server_canceled"]="已取消。"
-    ["msg_select_vpn_server_invalid_proto"]="⚠️ 选择无效。请输入0到2。"
-    ["msg_select_vpn_server_no_servers"]="⚠️ 所选协议（%s）没有通过过滤的服务器。"
-    ["msg_select_vpn_server_list_header"]="--- 可用服务器列表（%s：%s）---"
-    ["msg_select_vpn_server_num_prompt"]="请输入要连接的服务器编号（0:返回）："
-    ["msg_select_vpn_server_invalid_num"]="⚠️ 输入无效。请输入数字。"
-    ["msg_select_vpn_server_not_found"]="⚠️ 服务器编号 [ %s ] 不存在于通过 %s 过滤的列表中。"
+["msg_select_vpn_server_title"]="========== 连接到指定服务器 =========="
+["msg_select_vpn_server_opts"]=" 1) UDP\n 2) TCP\n 0) 返回（直接回车也可返回）"
+["msg_select_vpn_server_proto_prompt"]="选择 [0-2]: "
+["msg_select_vpn_server_canceled"]="已取消。"
+["msg_select_vpn_server_invalid_proto"]="⚠️ 选择无效。请输入0到2。"
+["msg_select_vpn_server_no_servers"]="⚠️ 所选协议（%s）没有通过过滤的服务器。"
+["msg_select_vpn_server_list_header"]="--- 可用服务器列表（%s：%s）---"
+["msg_select_vpn_server_num_prompt"]="请输入要连接的服务器编号（0:返回）："
+["msg_select_vpn_server_invalid_num"]="⚠️ 输入无效。请输入数字。"
+["msg_select_vpn_server_not_found"]="⚠️ 服务器编号 [ %s ] 不存在于通过 %s 过滤的列表中。"
 
 # show_rating_menu
-    ["msg_show_rating_menu_menu"]="========== 服务器管理 / 评分菜单 ==========\n 1) UDP 服务器列表 / 评分\n 2) TCP 服务器列表 / 评分\n 3) 导出服务器评分\n 4) 导入服务器评分\n 5) 重置评分\n 6) 更新服务器信息\n 7) VPN 连接超时设置\n 0) 返回（直接回车也可返回）\n------------------------------------------------"
-    ["msg_show_rating_menu_prompt"]="选择 [0]: "
-    ["msg_show_rating_menu_invalid"]="选择无效。"
+["msg_show_rating_menu_menu"]="========== 服务器管理 / 评分菜单 ==========\n 1) UDP 服务器列表 / 评分\n 2) TCP 服务器列表 / 评分\n 3) 导出服务器评分\n 4) 导入服务器评分\n 5) 重置评分\n 6) 更新服务器信息\n 7) VPN 连接超时设置\n 0) 返回（直接回车也可返回）\n------------------------------------------------"
+["msg_show_rating_menu_prompt"]="选择 [0]: "
+["msg_show_rating_menu_invalid"]="选择无效。"
 
 # configure_vpn_timeout
-    ["msg_configure_vpn_timeout_title"]="--- VPN 连接超时设置 ---"
-    ["msg_configure_vpn_timeout_curr_val"]=" 当前值：%s 秒"
-    ["msg_configure_vpn_timeout_prompt"]="请输入新的超时秒数 [1-120 / 回车返回]: "
-    ["msg_configure_vpn_timeout_success"]="✓ VPN 超时已设置为 %s 秒。"
+["msg_configure_vpn_timeout_title"]="--- VPN 连接超时设置 ---"
+["msg_configure_vpn_timeout_curr_val"]=" 当前值：%s 秒"
+["msg_configure_vpn_timeout_prompt"]="请输入新的超时秒数 [1-120 / 回车返回]: "
+["msg_configure_vpn_timeout_success"]="✓ VPN 超时已设置为 %s 秒。"
 
 # permission_setup
-    ["msg_permission_setup_title"]="=== 初始设置（权限与认证） ==="
-    ["msg_permission_setup_step1"]="1. 正在设置权限和目录..."
-    ["msg_permission_setup_dir_created"]="   ✓ 已创建数据目录：%s"
-    ["msg_permission_setup_log_created"]="   ✓ 已创建日志目录：%s"
-    ["msg_permission_setup_step2"]="1.5. 正在设置系统日志管理（logrotate）..."
-    ["msg_permission_setup_logrotate_success"]="   ✓ 已部署 logrotate 配置：%s"
-    ["msg_permission_setup_logrotate_fail"]="   ⚠️ 部署 logrotate 配置失败（请检查 sudo 权限）。"
-    ["msg_permission_setup_step3"]="2. 输入 FastestVPN ID/密码凭据..."
-    ["msg_permission_setup_user_prompt"]="FastestVPN 用户ID（电子邮件地址）："
-    ["msg_permission_setup_pass_prompt"]="密码："
-    ["msg_permission_setup_auth_success"]="   ✓ ID/密码凭据已配置并保存。"
-    ["msg_permission_setup_auth_fail"]="   ⚠️ 保存 ID/密码凭据失败。"
+["msg_permission_setup_title"]="=== 初始设置（权限与认证） ==="
+["msg_permission_setup_step1"]="1. 正在设置权限和目录..."
+["msg_permission_setup_dir_created"]="   ✓ 已创建数据目录：%s"
+["msg_permission_setup_dir_exists"]="   ✓ 数据目录检查完成"
+["msg_permission_setup_permissions_done"]="   ✓ 权限设置完成"
+["msg_permission_setup_credentials_title"]="2. 设置凭据（ID/密码）"
+["msg_permission_setup_current_user"]="   （当前配置用户：%s）"
+["msg_permission_setup_keep_existing"]="   * 不修改的项目直接按 Enter 保持原值。"
+["msg_permission_setup_user_prompt"]="用户名（ID）[%s]："
+["msg_permission_setup_pass_prompt"]="密码："
+["msg_permission_setup_auth_missing"]="错误：用户名或密码未设置。已跳过凭据保存。"
+["msg_permission_setup_auth_saved"]="✓ 凭据已保存：%s"
+["msg_permission_setup_complete"]="初始设置（权限）已完成。"
 
 # permission_cleanup
-    ["msg_permission_cleanup_title"]="=== 退出清理（清理与凭据删除） ==="
-    ["msg_permission_cleanup_pid_removed"]="✓ 已删除残留 PID 文件（PID: %s）"
-    ["msg_permission_cleanup_pid_unknown"]="未知"
-    ["msg_permission_cleanup_logrotate_removed"]="✓ 已删除 logrotate 配置文件：%s"
-    ["msg_permission_cleanup_auth_removed"]="✓ 已删除认证文件（auth.conf）。"
-    ["msg_permission_cleanup_no_cleanup"]="✓ 没有需要删除或清理的文件。"
-    ["msg_permission_cleanup_cleanup_done"]="退出清理已完成。"
+["msg_permission_cleanup_title"]="=== 退出清理（清理与凭据删除） ==="
+["msg_permission_cleanup_pid_removed"]="✓ 已删除残留 PID 文件（PID: %s）"
+["msg_permission_cleanup_pid_unknown"]="未知"
+["msg_permission_cleanup_no_cleanup"]="✓ 没有需要删除或清理的文件。"
+["msg_permission_cleanup_cleanup_done"]="退出清理已完成。"
 
 # show_setup_cleanup_menu
-    ["msg_show_setup_cleanup_menu_menu"]="========== 启用 / 停用设置 ==========\n 1) 启用使用（授予权限 / 设置认证）* 使用前请先执行。\n 2) 停止使用（撤销权限）* 删除应用前请先执行。\n 0) 返回（直接回车也可返回）\n--------------------------------------------"
-    ["msg_show_setup_cleanup_menu_prompt"]="选择 [0]: "
-    ["msg_show_setup_cleanup_menu_invalid"]="选择无效。"
+["msg_show_setup_cleanup_menu_menu"]="========== 启用 / 停用设置 ==========\n 1) 启用使用（授予权限 / 设置认证）* 使用前请先执行。\n 2) 停止使用（撤销权限）* 删除应用前请先执行。\n 0) 返回（直接回车也可返回）\n--------------------------------------------"
+["msg_show_setup_cleanup_menu_prompt"]="选择 [0]: "
+["msg_show_setup_cleanup_menu_invalid"]="选择无效。"
 
 # show_main_menu
-    ["msg_show_main_menu_opts"]=" 1) 快速 VPN 连接（连接到目标服务器）\n 2) 断开 VPN\n 3) 连接到指定服务器\n 4) 快速连接设置（模式 / 协议 / 过滤）\n 5) 服务器管理 / 评分 / 更新\n 9) 启用 / 停用使用（权限 / 认证）\n 0) 退出"
-    ["msg_show_main_menu_prompt"]="请选择 [0-9]: "
-    ["msg_show_main_menu_exit"]="正在退出 FVPN。"
-    ["msg_show_main_menu_invalid"]="❌ 选择无效。"
+["msg_show_main_menu_opts"]=" 1) 快速 VPN 连接（连接到目标服务器）\n 2) 断开 VPN\n 3) 连接到指定服务器\n 4) 快速连接设置（模式 / 协议 / 过滤）\n 5) 服务器管理 / 评分 / 更新\n 9) 启用 / 停用使用（权限 / 认证）\n 0) 退出"
+["msg_show_main_menu_prompt"]="请选择 [0-9]: "
+["msg_show_main_menu_exit"]="正在退出 FVPN。"
+["msg_show_main_menu_invalid"]="❌ 选择无效。"
 )

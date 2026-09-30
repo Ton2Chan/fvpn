@@ -5,7 +5,7 @@
 # ==============================================================================
 
 # 0. System Information & Base Path Auto-Detection / システム情報＆ベースパス自動判定
-export FVPN_VERSION="1.1.2"
+export FVPN_VERSION="1.1.3"
 readonly FVPN_VERSION
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
