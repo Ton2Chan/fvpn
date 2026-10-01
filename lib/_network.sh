@@ -254,7 +254,7 @@ _phy_openvpn_start() {
         --mute 2 \
         --daemon \
         --writepid "$_PHY_PID_FILE" \
-        --log "$log_file" ) >/dev/null 2>&1
+        --log-append "$log_file" ) >/dev/null 2>&1
 
     return $?
 }
