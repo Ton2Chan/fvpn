@@ -5,7 +5,7 @@
 # ==============================================================================
 
 # 0. System Information & Base Path Auto-Detection / システム情報＆ベースパス自動判定
-export FVPN_VERSION="1.1.5"
+export FVPN_VERSION="1.1.6"
 readonly FVPN_VERSION
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -125,3 +125,9 @@ mkdir -p "$FVPN_DATA" "$FVPN_LOGDIR"
 
 # Common file name for rating export/import / 評価データのエクスポート/インポート用共通ファイル名
 FILE_RATINGS_EXPORT_NAME="fvpn_ratings.txt"
+
+# ------------------------------------------------------------------------------
+# Log Configuration
+# ------------------------------------------------------------------------------
+export FVPN_LOGDIR="${FVPN_LOGDIR:-${FVPN_DATA:-./data}/logs}"
+export FVPN_OPENVPN_LOG="${FVPN_LOGDIR}/openvpn.log"

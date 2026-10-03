@@ -26,7 +26,7 @@ phy_connect() {
     local state_file="${_PHY_STATE_FILE:-${FVPN_DATA}/_phy_mode}"
     local conn_file="${_PHY_CONNECTED_SERVER_FILE:-${FVPN_DATA}/_phy_connected_server}"
     local pid_file="${FVPN_PID:-${FVPN_DATA}/fvpn.pid}"
-    local log_file="${FVPN_LOGDIR}/openvpn.log"
+    local log_file="${FVPN_OPENVPN_LOG}"
     local timeout="${TIMEOUT_VPN_CONNECT:-30}"
 
     [ ! -f "$auth_file" ] && auth_file="${FVPN_DATA}/auth.conf"
@@ -42,6 +42,9 @@ phy_connect() {
 
     # Apply kill switch before connection launch / 起動前のキルスイッチ適用
     _phy_fw_killswitch "$s_ip" "$s_port" "$s_proto"
+
+    # Rotate log if size exceeds limit before starting new OpenVPN process
+    log_rotate_by_size "$log_file"
 
     # Start OpenVPN daemon / OpenVPN起動
     _phy_openvpn_start \
@@ -445,4 +448,26 @@ sync_target_index_by_server() {
         TARGET_INDEX=-1
         TARGET_SERVER=""
     fi
+}
+
+# ------------------------------------------------------------------------------
+# log_rotate_by_size
+# Rotate log file to .old if it exceeds the limit (2MB - 128KB = 1966080 bytes)
+# ------------------------------------------------------------------------------
+log_rotate_by_size() {
+    local log_file="${1:-$FVPN_OPENVPN_LOG}"
+    local limit_size="${2:-1966080}" # 2MB - 128KB
+
+    # 1. ファイルが存在しない、または空の場合は何もせずリターン
+    [ ! -f "$log_file" ] && return 0
+
+    # 2. サイズ判定（2MB - 128KB 未満なら即リターン）
+    local current_size
+    current_size=$(stat -c%s "$log_file" 2>/dev/null || echo 0)
+    [ "$current_size" -lt "$limit_size" ] && return 0
+
+    # 3. 超過時：旧バックアップ(.old)を上書きし、新ログファイルを安全に空作成
+    mv -f "$log_file" "${log_file}.old" 2>/dev/null
+    touch "$log_file" 2>/dev/null
+    chmod 666 "$log_file" 2>/dev/null
 }
