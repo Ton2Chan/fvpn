@@ -244,6 +244,7 @@ _phy_openvpn_start() {
     # Suppress log writing with --verb 3 and --mute 2 to prevent disk wear
     # --verb 3 と --mute 2 でログ書き込みを抑え、ディスク損耗を防ぐ
     ( sudo openvpn \
+        --remap-usr1 SIGTERM \
         --config "$ovpn_file" \
         --remote "$r_ip" "$r_port" \
         --auth-user-pass "$auth_file" \
