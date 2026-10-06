@@ -462,6 +462,70 @@ load_master_servers_and_count() {
     FVPN_TOTAL_COUNT=$(( FVPN_UDP_COUNT + FVPN_TCP_COUNT ))
 }
 
+# Sanitize trailing NUL bytes from the OpenVPN log after abnormal termination
+# 異常終了後のOpenVPNログ末尾に混入したNUL(0x00)を除去
+log_sanitize() {
+    local log_file="$1"
+
+    # Do nothing if the log file does not exist or is empty
+    # ログファイルが存在しない、または空の場合は何もしない
+    if [ ! -f "$log_file" ] || [ ! -s "$log_file" ]; then
+        return 0
+    fi
+
+    # Find the position immediately after the last non-NUL byte
+    # 末尾から最後のNUL以外のバイトを探し、その直後の位置を取得
+    local valid_size
+    valid_size=$(perl -e '
+        open(FH, "<:raw", $ARGV[0]) or exit 1;
+        seek(FH, 0, 2) or exit 1;
+
+        my $pos = tell(FH);
+
+        while ($pos > 0) {
+            --$pos;
+
+            seek(FH, $pos, 0) or exit 1;
+
+            my $char;
+            my $read_bytes = read(FH, $char, 1);
+
+            exit 1 if !defined($read_bytes) || $read_bytes != 1;
+
+            if ($char ne "\0") {
+                print $pos + 1;
+                exit 0;
+            }
+        }
+
+        # The entire file consists only of NUL bytes
+        # ファイル全体がNULバイトだけの場合
+        print "0";
+        exit 0;
+    ' "$log_file" 2>/dev/null)
+
+    # Do nothing if Perl failed or returned an invalid value
+    # Perlの処理失敗または不正な値の場合は何もしない
+    case "$valid_size" in
+        ''|*[!0-9]*)
+            return 0
+            ;;
+    esac
+
+    # Get the current file size
+    # 現在のファイルサイズを取得
+    local current_size
+    current_size=$(stat -c%s "$log_file" 2>/dev/null) || return 0
+
+    # Truncate only when trailing NUL bytes actually exist
+    # 末尾にNULバイトが存在する場合だけ切り詰める
+    if [ "$valid_size" -lt "$current_size" ]; then
+        truncate -s "$valid_size" "$log_file" 2>/dev/null
+    fi
+
+    return 0
+}
+
 # ==============================================================================
 # Initialization & Boot Process Manager
 # 初期化 & 起動プロセス管理
@@ -470,6 +534,9 @@ load_master_servers_and_count() {
 init_boot_process() {
     # 1. Prepare physical directories / 物理ディレクトリの準備
     mkdir -p "${FVPN_DATA}" "${FVPN_LOGDIR}"
+
+    # Sanitize OpenVPN log on startup / 起動時ログサニタイズ処理
+    log_sanitize "${FVPN_OPENVPN_LOG}"
 
     # 2. Flag evaluation (Boot-time snapshot) / フラグ判定 (起動時点のスナップショット)
     if [ ! -f "${FILE_MASTER_SERVERS}" ]; then

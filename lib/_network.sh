@@ -230,8 +230,7 @@ _phy_openvpn_start() {
     local r_ip="$3"
     local r_port="$4"
     local r_proto="$5"
-    local log_dir="${FVPN_LOGDIR:-./logs}"
-    local log_file="${log_dir}/openvpn.log"
+    local log_file="${FVPN_OPENVPN_LOG}"
 
     if [ ! -f "$ovpn_file" ] || [ ! -f "$auth_file" ]; then
         return 1
@@ -240,10 +239,6 @@ _phy_openvpn_start() {
     sudo touch "$log_file" "$_PHY_PID_FILE" 2>/dev/null
     sudo chmod 666 "$log_file" "$_PHY_PID_FILE" 2>/dev/null
 
-    # Pass only IP and port to --remote to avoid protocol specification errors
-    # IPとポートのみを --remote に渡し、プロトコル指定エラーを回避
-    # Suppress log writing with --verb 2 and --mute 2 to prevent disk wear
-    # --verb 2 と --mute 2 でログ書き込みを抑え、ディスク損耗を防ぐ
     ( sudo openvpn \
         --remap-usr1 SIGTERM \
         --config "$ovpn_file" \
@@ -251,7 +246,7 @@ _phy_openvpn_start() {
         --auth-user-pass "$auth_file" \
         --allow-compression asym \
         --connect-timeout 15 \
-        --verb 2 \
+        --verb 3 \
         --mute 2 \
         --daemon \
         --writepid "$_PHY_PID_FILE" \

@@ -5,7 +5,7 @@
 # ==============================================================================
 
 # 0. System Information & Base Path Auto-Detection / システム情報＆ベースパス自動判定
-export FVPN_VERSION="1.1.8"
+export FVPN_VERSION="1.1.9"
 readonly FVPN_VERSION
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -66,6 +66,7 @@ export DEBUG="${DEBUG:-0}"       # 0: Disabled, 1: Simple Debug (Dump), 2: Physi
 # 2. Physical Layer (Directory & File Path Abstraction) / 物理層 (ディレクトリ & ファイルパス抽象化)
 export FVPN_DATA="${FVPN_HOME}/data"
 export FVPN_LOGDIR="${FVPN_HOME}/logs"
+export FVPN_OPENVPN_LOG="${FVPN_LOGDIR}/openvpn.log"
 export FVPN_TCP="${FVPN_HOME}/tcp_files"
 export FVPN_UDP="${FVPN_HOME}/udp_files"
 export FVPN_TCP_DIR="${FVPN_TCP}"
@@ -76,7 +77,6 @@ export FILE_SETTINGS_INI="${FVPN_DATA}/settings.conf"
 export FVPN_SETTINGS="${FILE_SETTINGS_INI}"
 export FVPN_AUTH="${FVPN_DATA}/auth.conf"
 export FVPN_PID="${FVPN_DATA}/fvpn.pid"
-export FVPN_LOGFILE="${FVPN_LOGDIR}/fvpn.log"
 
 # Physical Layer Variables (For external reference) / 物理層変数(外部参照用)
 export AUTH_STATE=0  # 0: Unverified, 1: OK, -1: NG / 0: 未確認, 1: OK, -1: NG
