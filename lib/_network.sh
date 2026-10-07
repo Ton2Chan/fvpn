@@ -240,7 +240,6 @@ _phy_openvpn_start() {
     sudo chmod 666 "$log_file" "$_PHY_PID_FILE" 2>/dev/null
 
     ( sudo openvpn \
-        --remap-usr1 SIGTERM \
         --config "$ovpn_file" \
         --remote "$r_ip" "$r_port" \
         --auth-user-pass "$auth_file" \
