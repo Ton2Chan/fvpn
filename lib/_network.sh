@@ -232,26 +232,72 @@ _phy_openvpn_start() {
     local r_proto="$5"
     local log_file="${FVPN_OPENVPN_LOG}"
 
-    if [ ! -f "$ovpn_file" ] || [ ! -f "$auth_file" ]; then
+    # 1. 必須ファイルおよびログパスの存在確認
+    if [ ! -f "$ovpn_file" ] || [ ! -f "$auth_file" ] || [ -z "$log_file" ]; then
         return 1
     fi
 
-    sudo touch "$log_file" "$_PHY_PID_FILE" 2>/dev/null
-    sudo chmod 666 "$log_file" "$_PHY_PID_FILE" 2>/dev/null
+    # 2. 特殊な <connection> プロファイル形式の検出と拒否
+    if grep -qiE '^[[:space:]]*</?connection([[:space:]>]|$)' "$ovpn_file"; then
+        echo "Error: Unsupported connection profile configuration." >&2
+        return 1
+    fi
 
+    # 3. IPアドレスとポート番号の検証
+    [ -n "$r_ip" ] || return 1
+    [[ "$r_port" =~ ^[0-9]+$ ]] || return 1
+    local port_num=$((10#$r_port))
+    (( port_num >= 1 && port_num <= 65535 )) || return 1
+    r_port="$port_num"
+
+    # 4. プロトコルの検証および OpenVPN クライアント形式への変換
+    case "$r_proto" in
+        tcp)
+            r_proto="tcp-client"
+            ;;
+        udp|tcp-client|udp4|udp6|tcp4-client|tcp6-client)
+            ;;
+        *)
+            return 1
+            ;;
+    esac
+
+    # 5. 自分しか読めない権限で安全な一時設定ファイルを作成
+    local tmp_ovpn
+    tmp_ovpn=$(umask 077 && mktemp "${TMPDIR:-/tmp}/fvpn_clean.XXXXXX") || return 1
+
+    # 6. 元の .ovpn から remote 行と proto 行を除外（失敗または空ファイル時は即削除して中断）
+    if ! grep -v -E '^[[:space:]]*(remote|proto)[[:space:]]+' "$ovpn_file" > "$tmp_ovpn" || [ ! -s "$tmp_ovpn" ]; then
+        rm -f "$tmp_ovpn"
+        return 1
+    fi
+
+    # 7. ログファイルとPIDファイルの準備（PIDファイルは644で書き込み保護）
+    sudo touch "$log_file" "$_PHY_PID_FILE" 2>/dev/null
+    sudo chmod 666 "$log_file" 2>/dev/null
+    sudo chmod 644 "$_PHY_PID_FILE" 2>/dev/null
+
+    # 8. OpenVPN デーモン起動
     ( sudo openvpn \
-        --config "$ovpn_file" \
+        --config "$tmp_ovpn" \
         --remote "$r_ip" "$r_port" \
+        --proto "$r_proto" \
         --auth-user-pass "$auth_file" \
         --allow-compression asym \
         --connect-timeout 15 \
+        --nobind \
+        --persist-remote-ip \
         --verb 3 \
         --mute 2 \
         --daemon \
         --writepid "$_PHY_PID_FILE" \
         --log-append "$log_file" ) >/dev/null 2>&1
 
-    return $?
+    local ret=$?
+    sleep 1
+    rm -f "$tmp_ovpn"
+
+    return $ret
 }
 
 # ------------------------------------------------------------------------------
